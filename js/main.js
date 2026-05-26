@@ -42,6 +42,7 @@ import {
   updateHistoryDisplay,
   updateDifficultyUI,
   updateThemeUI,
+  updateCardThemeUI,
   updateSoundUI,
   updateBGMUI,
   switchScreen,
@@ -329,6 +330,19 @@ function bindEvents() {
     savePreferences(state);
   });
 
+  // 卡牌主题选择
+  if (dom.cardThemeBtns) {
+    dom.cardThemeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playSound('button');
+        state.cardTheme = btn.dataset.cardTheme;
+        document.body.setAttribute('data-card-theme', state.cardTheme);
+        updateCardThemeUI(state, dom);
+        savePreferences(state);
+      });
+    });
+  }
+
   // 音效开关
   if (dom.soundToggle) {
     dom.soundToggle.addEventListener('change', (e) => {
@@ -450,10 +464,13 @@ function bindEvents() {
 function init() {
   dom = getDOMElements();
 
+  document.body.setAttribute('data-card-theme', state.cardTheme);
+
   initBGM('bgm.mp3');
 
   updateDifficultyUI(state, dom);
   updateThemeUI(state, dom);
+  updateCardThemeUI(state, dom);
   updateSoundUI(state, dom);
   updateBGMUI(isBGMEnabled(), dom);
   updateHistoryDisplay(state, dom);

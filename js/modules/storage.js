@@ -46,7 +46,7 @@ export function loadSaveData() {
     bestTime: safeGetItem(STORAGE_KEYS.BEST_TIME, Infinity),
     theme: safeGetItem(STORAGE_KEYS.LAST_THEME, 'light'),
     difficulty: safeGetItem(STORAGE_KEYS.LAST_DIFFICULTY, 'medium'),
-    cardTheme: safeGetItem(STORAGE_KEYS.LAST_CARD_THEME, 'default'),
+    cardTheme: safeGetItem(STORAGE_KEYS.LAST_CARD_THEME, 'guofeng'),
     soundEnabled: safeGetItem(STORAGE_KEYS.SOUND_ENABLED, true),
     bgmEnabled: safeGetItem(STORAGE_KEYS.BGM_ENABLED, true),
   };

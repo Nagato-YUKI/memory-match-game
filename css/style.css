@@ -1,50 +1,77 @@
 /* ============================================
-   记忆翻牌小游戏 - 国风主题样式
+   记忆翻牌小游戏 - 双主题样式（国风 + 和风）
    ============================================ */
 
 /* ---------- 1. CSS 变量体系 ---------- */
-:root {
-  /* 国风主色 - 朱砂红 */
+
+/* 国风主题变量 */
+:root,
+[data-card-theme="guofeng"] {
   --color-primary: #C23A30;
   --color-primary-hover: #A52A20;
   --color-primary-light: #FCE8E6;
 
-  /* 国风辅色 - 靛青 */
   --color-secondary: #2E5C8A;
   --color-secondary-hover: #1E4A6E;
   --color-secondary-light: #E8F0F8;
 
-  /* 国风背景 - 宣纸米白 */
   --color-bg: #F5F0E8;
   --color-bg-elevated: #FFFBF5;
   --color-bg-overlay: rgba(30, 20, 15, 0.65);
 
-  /* 文字色 - 墨黑 */
   --color-text-primary: #1A1A1A;
   --color-text-secondary: #5C5C5C;
   --color-text-muted: #999999;
   --color-text-inverse: #FFFBF5;
 
-  /* 强调色 - 金箔 */
   --color-accent-success: #4A9B5E;
   --color-accent-success-glow: rgba(74, 155, 94, 0.3);
   --color-accent-error: #C23A30;
   --color-accent-error-glow: rgba(194, 58, 48, 0.3);
   --color-accent-gold: #C9A227;
 
-  /* 卡牌 */
   --card-border: rgba(180, 160, 130, 0.3);
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.1);
   --card-radius: 8px;
 
-  /* 动画 */
   --transition-fast: 150ms ease;
   --transition-base: 300ms ease;
 }
 
+/* 和风主题变量 */
+[data-card-theme="japanese"] {
+  --color-primary: #D4A5A5;
+  --color-primary-hover: #C48B8B;
+  --color-primary-light: #F5E6E6;
+
+  --color-secondary: #6B8E9F;
+  --color-secondary-hover: #4F7385;
+  --color-secondary-light: #E8F0F3;
+
+  --color-bg: #F7F3F0;
+  --color-bg-elevated: #FDF9F7;
+  --color-bg-overlay: rgba(40, 30, 35, 0.6);
+
+  --color-text-primary: #2D2426;
+  --color-text-secondary: #6B5E60;
+  --color-text-muted: #A8989A;
+  --color-text-inverse: #FDF9F7;
+
+  --color-accent-success: #6BA88A;
+  --color-accent-success-glow: rgba(107, 168, 138, 0.3);
+  --color-accent-error: #C97373;
+  --color-accent-error-glow: rgba(201, 115, 115, 0.3);
+  --color-accent-gold: #C9A86C;
+
+  --card-border: rgba(180, 160, 160, 0.25);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --card-radius: 12px;
+}
+
 /* 深色主题 - 夜墨 */
-[data-theme="dark"] {
+[data-theme="dark"][data-card-theme="guofeng"] {
   --color-primary: #E85D50;
   --color-primary-hover: #F07060;
   --color-primary-light: #3D1E1A;
@@ -71,6 +98,36 @@
   --card-border: rgba(180, 160, 130, 0.15);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* 深色主题 - 夜樱 */
+[data-theme="dark"][data-card-theme="japanese"] {
+  --color-primary: #E8A5A5;
+  --color-primary-hover: #F0B8B8;
+  --color-primary-light: #3D2A2A;
+
+  --color-secondary: #7BA8B8;
+  --color-secondary-hover: #9BC0CD;
+  --color-secondary-light: #1A2D33;
+
+  --color-bg: #1E181A;
+  --color-bg-elevated: #2E282A;
+  --color-bg-overlay: rgba(0, 0, 0, 0.8);
+
+  --color-text-primary: #F0E8E8;
+  --color-text-secondary: #C0B0B0;
+  --color-text-muted: #908080;
+  --color-text-inverse: #1E181A;
+
+  --color-accent-success: #7BC89A;
+  --color-accent-success-glow: rgba(123, 200, 154, 0.25);
+  --color-accent-error: #E89898;
+  --color-accent-error-glow: rgba(232, 152, 152, 0.25);
+  --color-accent-gold: #E0C080;
+
+  --card-border: rgba(180, 160, 160, 0.12);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
 }
 
 /* ---------- 2. 重置与基础 ---------- */
@@ -299,6 +356,40 @@ button {
 
 .toggle-input:checked + .toggle-slider::after {
   transform: translateX(18px);
+}
+
+/* 卡牌主题选择 */
+.card-theme-options {
+  display: flex;
+  gap: 10px;
+}
+
+.card-theme-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.card-theme-btn:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card-theme-btn--active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
 }
 
 /* 主题切换 */
@@ -559,12 +650,12 @@ button {
 }
 
 /* 卡牌背面 - 国风 */
-.card-theme-default .card-face--back {
+.card-theme-guofeng .card-face--back {
   background: linear-gradient(160deg, #2E5C8A 0%, #1E3A5F 100%);
   position: relative;
 }
 
-.card-theme-default .card-face--back::before {
+.card-theme-guofeng .card-face--back::before {
   content: '';
   position: absolute;
   inset: 6px;
@@ -572,13 +663,36 @@ button {
   border-radius: calc(var(--card-radius) - 2px);
 }
 
-.card-theme-default .card-face--back::after {
+.card-theme-guofeng .card-face--back::after {
   content: '記';
   position: absolute;
   font-size: 1.5rem;
   color: rgba(255, 255, 255, 0.15);
   font-weight: 700;
   letter-spacing: 0.2em;
+}
+
+/* 卡牌背面 - 和风 */
+.card-theme-japanese .card-face--back {
+  background: linear-gradient(160deg, #6B8E9F 0%, #4A6B7A 100%);
+  position: relative;
+}
+
+.card-theme-japanese .card-face--back::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: calc(var(--card-radius) - 2px);
+}
+
+.card-theme-japanese .card-face--back::after {
+  content: '桜';
+  position: absolute;
+  font-size: 1.4rem;
+  color: rgba(255, 255, 255, 0.12);
+  font-weight: 700;
+  letter-spacing: 0.15em;
 }
 
 /* 卡牌正面 */
