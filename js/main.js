@@ -9,6 +9,7 @@ import {
   resetGameData,
   canFlipCard,
   isAllMatched,
+  getDifficultyConfig,
 } from './modules/gameState.js';
 import {
   generateCards,
@@ -41,7 +42,6 @@ import {
   updateHistoryDisplay,
   updateDifficultyUI,
   updateThemeUI,
-  updateCardThemeUI,
   updateSoundUI,
   updateBGMUI,
   switchScreen,
@@ -116,14 +116,7 @@ function enterPlayingState(prevState) {
   });
 
   if (state.timedMode) {
-    let timeLimit;
-    if (state.difficulty === 'easy') {
-      timeLimit = null;
-    } else if (state.difficulty === 'medium') {
-      timeLimit = 60;
-    } else {
-      timeLimit = 90;
-    }
+    const { timeLimit } = getDifficultyConfig(state);
 
     if (timeLimit) {
       import('./modules/timer.js').then((timer) => {
@@ -159,20 +152,11 @@ function enterWonState() {
   pauseBGM();
   lockAllCards(dom.gameBoard, true);
 
-  let config;
-  if (state.difficulty === 'easy') {
-    config = { timeBase: 60, timeCoeff: 1, multiplier: 1.0 };
-  } else if (state.difficulty === 'medium') {
-    config = { timeBase: 120, timeCoeff: 2, multiplier: 1.5 };
-  } else {
-    config = { timeBase: 180, timeCoeff: 3, multiplier: 2.0 };
-  }
-
   const finalScore = calculateScore({
     matchedPairs: state.matchedPairs,
     elapsedSeconds: state.elapsedSeconds,
     errors: state.errors,
-    config,
+    config: getDifficultyConfig(state),
   });
 
   state.highScore = saveHighScore(finalScore, state.highScore);
@@ -271,14 +255,7 @@ function handleMatchSuccess(id1, id2) {
     markMatched(dom.gameBoard, id1);
     markMatched(dom.gameBoard, id2);
 
-    let config;
-    if (state.difficulty === 'easy') {
-      config = { timeBase: 60, timeCoeff: 1, multiplier: 1.0 };
-    } else if (state.difficulty === 'medium') {
-      config = { timeBase: 120, timeCoeff: 2, multiplier: 1.5 };
-    } else {
-      config = { timeBase: 180, timeCoeff: 3, multiplier: 2.0 };
-    }
+    const config = getDifficultyConfig(state);
     const timeBonus = Math.max(0, config.timeBase - state.elapsedSeconds) * config.timeCoeff;
     const points = 100 + timeBonus;
     showScoreFloat(dom.gameBoard, id1, points);
@@ -350,16 +327,6 @@ function bindEvents() {
     state.theme = state.theme === 'light' ? 'dark' : 'light';
     updateThemeUI(state, dom);
     savePreferences(state);
-  });
-
-  // 卡牌主题选择
-  dom.cardThemeBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      playSound('button');
-      state.cardTheme = btn.dataset.cardTheme;
-      updateCardThemeUI(state, dom);
-      savePreferences(state);
-    });
   });
 
   // 音效开关
@@ -487,7 +454,6 @@ function init() {
 
   updateDifficultyUI(state, dom);
   updateThemeUI(state, dom);
-  updateCardThemeUI(state, dom);
   updateSoundUI(state, dom);
   updateBGMUI(isBGMEnabled(), dom);
   updateHistoryDisplay(state, dom);

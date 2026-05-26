@@ -65,7 +65,7 @@ export function getDifficultyConfig(state) {
  * @returns {Object}
  */
 export function getCardThemeConfig(state) {
-  return CARD_THEMES[state.cardTheme];
+  return CARD_THEMES[state.cardTheme] || CARD_THEMES.default;
 }
 
 /**

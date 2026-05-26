@@ -21,9 +21,8 @@ export function generateCards(state) {
 
   return shuffled.map((card, index) => ({
     id: index,
-    symbol: card.emoji,
+    symbol: card.src,
     name: card.name,
-    colorClass: card.colorClass,
     matched: false,
   }));
 }
@@ -69,12 +68,13 @@ function createCardElement(card, onCardClick) {
   const front = document.createElement('div');
   front.className = 'card-face card-face--front';
 
-  const pattern = document.createElement('div');
-  pattern.className = `card-pattern ${card.colorClass}`;
-  pattern.textContent = card.symbol;
-  pattern.setAttribute('aria-hidden', 'true');
+  const img = document.createElement('img');
+  img.src = card.symbol;
+  img.alt = card.name;
+  img.className = 'card-image';
+  img.setAttribute('aria-hidden', 'true');
 
-  front.appendChild(pattern);
+  front.appendChild(img);
   inner.appendChild(back);
   inner.appendChild(front);
   cardEl.appendChild(inner);

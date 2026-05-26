@@ -71,19 +71,6 @@ export function updateThemeUI(state, dom) {
 }
 
 /**
- * 更新卡牌主题 UI
- * @param {Object} state
- * @param {Object} dom
- */
-export function updateCardThemeUI(state, dom) {
-  dom.cardThemeBtns.forEach((btn) => {
-    const isActive = btn.dataset.cardTheme === state.cardTheme;
-    btn.classList.toggle('card-theme-btn--active', isActive);
-    btn.setAttribute('aria-checked', String(isActive));
-  });
-}
-
-/**
  * 更新音效开关 UI
  * @param {Object} state
  * @param {Object} dom
