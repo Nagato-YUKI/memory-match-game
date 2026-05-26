@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>记忆翻牌小游戏</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 开始界面 -->
+  <div id="start-screen" class="screen screen--active">
+    <div class="start-container">
+      <h1 class="game-title">记忆翻牌</h1>
+      <p class="game-subtitle">挑战你的记忆力</p>
+
+      <!-- 难度选择 -->
+      <div class="difficulty-section">
+        <h2 class="section-title">选择难度</h2>
+        <div class="difficulty-options" role="radiogroup" aria-label="难度选择">
+          <button class="difficulty-btn" data-difficulty="easy" role="radio" aria-checked="false">
+            <span class="difficulty-label">简单</span>
+            <span class="difficulty-desc">4×3 网格 · 6 对 · 不限时</span>
+          </button>
+          <button class="difficulty-btn difficulty-btn--active" data-difficulty="medium" role="radio" aria-checked="true">
+            <span class="difficulty-label">中等</span>
+            <span class="difficulty-desc">4×4 网格 · 8 对 · 限时 60 秒</span>
+          </button>
+          <button class="difficulty-btn" data-difficulty="hard" role="radio" aria-checked="false">
+            <span class="difficulty-label">困难</span>
+            <span class="difficulty-desc">6×4 网格 · 12 对 · 限时 90 秒</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 限时模式开关 -->
+      <div class="toggle-section">
+        <label class="toggle-label" for="timed-mode-toggle">
+          <span class="toggle-text">限时模式</span>
+          <input type="checkbox" id="timed-mode-toggle" class="toggle-input" checked>
+          <span class="toggle-slider" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <!-- 卡牌主题选择 -->
+      <div class="card-theme-section">
+        <h2 class="section-title">卡牌主题</h2>
+        <div class="card-theme-options" role="radiogroup" aria-label="卡牌主题选择">
+          <button class="card-theme-btn card-theme-btn--active" data-card-theme="pets" role="radio" aria-checked="true">
+            <span class="card-theme-icon">🐾</span>
+            <span class="card-theme-label">萌宠乐园</span>
+          </button>
+          <button class="card-theme-btn" data-card-theme="geometric" role="radio" aria-checked="false">
+            <span class="card-theme-icon">🔷</span>
+            <span class="card-theme-label">几何幻想</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 主题切换 -->
+      <div class="theme-section">
+        <button id="theme-toggle" class="theme-btn" aria-label="切换主题">
+          <span class="theme-icon">☀️</span>
+          <span class="theme-text">浅色主题</span>
+        </button>
+      </div>
+
+      <!-- 音效开关 -->
+      <div class="toggle-section">
+        <label class="toggle-label" for="sound-toggle">
+          <span class="toggle-text">游戏音效</span>
+          <input type="checkbox" id="sound-toggle" class="toggle-input" checked>
+          <span class="toggle-slider" aria-hidden="true"></span>
+        </label>
+      </div>
+
+      <!-- 开始按钮 -->
+      <button id="start-btn" class="btn btn--primary btn--large">开始游戏</button>
+
+      <!-- 历史记录 -->
+      <div class="history-section">
+        <div class="history-item">
+          <span class="history-label">历史最高分</span>
+          <span id="history-high-score" class="history-value">0</span>
+        </div>
+        <div class="history-item">
+          <span class="history-label">最佳用时</span>
+          <span id="history-best-time" class="history-value">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 游戏界面 -->
+  <div id="game-screen" class="screen">
+    <!-- 分数板 -->
+    <header class="score-board">
+      <div class="score-item">
+        <span class="score-label">配对</span>
+        <span id="score-matches" class="score-value">0</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">用时</span>
+        <span id="score-time" class="score-value">00:00</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">错误</span>
+        <span id="score-errors" class="score-value">0</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">得分</span>
+        <span id="score-current" class="score-value score-value--gold">0</span>
+      </div>
+      <div class="score-item score-item--highlight">
+        <span class="score-label">最高分</span>
+        <span id="score-high" class="score-value">0</span>
+      </div>
+      <div class="score-item">
+        <span class="score-label">倒计时</span>
+        <span id="score-countdown" class="score-value score-value--countdown">--:--</span>
+      </div>
+    </header>
+
+    <!-- 游戏控制栏 -->
+    <div class="game-controls">
+      <button id="pause-btn" class="btn btn--secondary">暂停</button>
+      <button id="restart-btn" class="btn btn--secondary">重新开始</button>
+      <button id="menu-btn" class="btn btn--ghost">返回菜单</button>
+    </div>
+
+    <!-- 游戏面板 -->
+    <main id="game-board" class="game-board"></main>
+  </div>
+
+  <!-- 暂停遮罩 -->
+  <div id="pause-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content">
+      <h2 class="overlay-title">游戏暂停</h2>
+      <button id="resume-btn" class="btn btn--primary">继续游戏</button>
+      <button id="pause-restart-btn" class="btn btn--secondary">重新开始</button>
+    </div>
+  </div>
+
+  <!-- 胜利遮罩 -->
+  <div id="win-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content">
+      <h2 class="overlay-title overlay-title--win">恭喜通关！</h2>
+      <div class="result-stats">
+        <div class="result-stat">
+          <span class="result-stat-label">最终得分</span>
+          <span id="win-score" class="result-stat-value result-stat-value--gold">0</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">总用时</span>
+          <span id="win-time" class="result-stat-value">00:00</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">错误次数</span>
+          <span id="win-errors" class="result-stat-value">0</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">难度倍率</span>
+          <span id="win-multiplier" class="result-stat-value">1.0x</span>
+        </div>
+      </div>
+      <div class="result-buttons">
+        <button id="win-replay-btn" class="btn btn--primary">再玩一次</button>
+        <button id="win-menu-btn" class="btn btn--secondary">返回菜单</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 失败遮罩 -->
+  <div id="lose-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content">
+      <h2 class="overlay-title overlay-title--lose">时间到！</h2>
+      <div class="result-stats">
+        <div class="result-stat">
+          <span class="result-stat-label">已配对</span>
+          <span id="lose-matches" class="result-stat-value">0</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">已用时间</span>
+          <span id="lose-time" class="result-stat-value">00:00</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-stat-label">错误次数</span>
+          <span id="lose-errors" class="result-stat-value">0</span>
+        </div>
+      </div>
+      <div class="result-buttons">
+        <button id="lose-replay-btn" class="btn btn--primary">再玩一次</button>
+        <button id="lose-menu-btn" class="btn btn--secondary">返回菜单</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
