@@ -121,11 +121,13 @@ export const CARD_THEMES = {
     cards: GUOFENG_CARDS,
     boardClass: 'card-theme-guofeng',
     bgImage: BG_IMAGES.guofeng,
+    cardBack: 'assets/images/cards/guofeng/card_back.png',
   },
   japanese: {
     name: '和风',
     cards: JAPANESE_CARDS,
     boardClass: 'card-theme-japanese',
     bgImage: BG_IMAGES.japanese,
+    cardBack: 'assets/images/cards/japanese/card_back.png',
   },
 };

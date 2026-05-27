@@ -243,7 +243,7 @@ button {
 
 /* 和风樱花装饰 */
 [data-card-theme="japanese"] .start-container::before {
-  content: '\u2741';
+  content: '❋';
   position: absolute;
   top: 8px;
   right: 12px;
@@ -253,7 +253,7 @@ button {
 }
 
 [data-card-theme="japanese"] .start-container::after {
-  content: '\u2741';
+  content: '❋';
   position: absolute;
   bottom: 8px;
   left: 12px;
@@ -724,6 +724,9 @@ button {
 /* 卡牌背面 - 国风（靛青底+回纹） */
 .card-theme-guofeng .card-face--back {
   background: linear-gradient(160deg, #2C5F7C 0%, #1A3A4F 100%);
+  background-image: url('../assets/images/cards/guofeng/card_back.png');
+  background-size: cover;
+  background-position: center;
   position: relative;
 }
 
@@ -736,7 +739,7 @@ button {
 }
 
 .card-theme-guofeng .card-face--back::after {
-  content: '\8A18';
+  content: '記';
   position: absolute;
   font-size: 1.6rem;
   color: rgba(255, 255, 255, 0.12);
@@ -747,6 +750,9 @@ button {
 /* 卡牌背面 - 和风（青灰底+樱花） */
 .card-theme-japanese .card-face--back {
   background: linear-gradient(160deg, #6B8E9F 0%, #4A6B7A 100%);
+  background-image: url('../assets/images/cards/japanese/card_back.png');
+  background-size: cover;
+  background-position: center;
   position: relative;
 }
 
@@ -759,7 +765,7 @@ button {
 }
 
 .card-theme-japanese .card-face--back::after {
-  content: '\274B';
+  content: '❋';
   position: absolute;
   font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.1);

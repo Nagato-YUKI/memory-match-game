@@ -3,8 +3,8 @@
  * @module cardRenderer
  */
 
-import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=3';
-import { shuffleArray } from './utils.js?v=3';
+import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=5';
+import { shuffleArray } from './utils.js?v=5';
 
 /**
  * 生成卡牌数据
@@ -23,6 +23,7 @@ export function generateCards(state) {
     ...card,
     index,
     matched: false,
+    backImg: card.backImg || './assets/card-back.png',
   }));
 }
 
@@ -63,6 +64,15 @@ function createCardElement(card, onCardClick) {
 
   const back = document.createElement('div');
   back.className = 'card-face card-face--back';
+
+  const backImg = document.createElement('img');
+  backImg.src = card.backImg;
+  backImg.alt = '卡牌背面';
+  backImg.className = 'card-back-image';
+  backImg.setAttribute('aria-hidden', 'true');
+  backImg.loading = 'eager';
+
+  back.appendChild(backImg);
 
   const front = document.createElement('div');
   front.className = 'card-face card-face--front';

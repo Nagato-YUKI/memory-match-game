@@ -3,14 +3,14 @@
  * 模块化重构版本，使用 ES6 Modules
  */
 
-import { GameState } from './modules/constants.js?v=3';
+import { GameState } from './modules/constants.js?v=5';
 import {
   createGameState,
   resetGameData,
   canFlipCard,
   isAllMatched,
   getDifficultyConfig,
-} from './modules/gameState.js?v=3';
+} from './modules/gameState.js?v=5';
 import {
   generateCards,
   renderGameBoard,
@@ -21,7 +21,7 @@ import {
   clearMismatch,
   lockAllCards,
   showScoreFloat,
-} from './modules/cardRenderer.js?v=3';
+} from './modules/cardRenderer.js?v=5';
 import {
   initAudioContext,
   playSound,
@@ -29,14 +29,14 @@ import {
   playBGM,
   pauseBGM,
   isBGMEnabled,
-} from './modules/audio.js?v=3';
+} from './modules/audio.js?v=5';
 import {
   saveHighScore,
   saveBestTime,
   savePreferences,
-} from './modules/storage.js?v=3';
-import { startTimer, stopAll } from './modules/timer.js?v=3';
-import getDOMElements from './modules/dom.js?v=3';
+} from './modules/storage.js?v=5';
+import { startTimer, stopAll } from './modules/timer.js?v=5';
+import getDOMElements from './modules/dom.js?v=5';
 import {
   updateScoreBoard,
   updateHistoryDisplay,
@@ -49,8 +49,8 @@ import {
   toggleOverlay,
   updateWinOverlay,
   updateLoseOverlay,
-} from './modules/ui.js?v=3';
-import { calculateScore } from './modules/utils.js?v=3';
+} from './modules/ui.js?v=5';
+import { calculateScore } from './modules/utils.js?v=5';
 
 // ============================================
 // 全局状态
@@ -470,6 +470,7 @@ function init() {
   dom = getDOMElements();
 
   document.body.setAttribute('data-card-theme', state.cardTheme);
+  document.body.setAttribute('data-theme', state.theme);
 
   initBGM('bgm.mp3');
 

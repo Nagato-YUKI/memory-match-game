@@ -3,8 +3,8 @@
  * @module ui
  */
 
-import { formatTime, calculateScore } from './utils.js?v=3';
-import { getDifficultyConfig } from './gameState.js?v=3';
+import { formatTime, calculateScore } from './utils.js?v=5';
+import { getDifficultyConfig } from './gameState.js?v=5';
 
 /**
  * 更新分数板显示
@@ -67,7 +67,7 @@ export function updateThemeUI(state, dom) {
   const isDark = state.theme === 'dark';
   dom.themeToggle.querySelector('.theme-icon').textContent = isDark ? '\uD83C\uDF19' : '\u2600\uFE0F';
   dom.themeToggle.querySelector('.theme-text').textContent = isDark ? '深色主题' : '浅色主题';
-  document.documentElement.setAttribute('data-theme', state.theme);
+  document.body.setAttribute('data-theme', state.theme);
 }
 
 /**
