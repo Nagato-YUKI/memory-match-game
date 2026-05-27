@@ -4,9 +4,8 @@
 
 /* ---------- 1. CSS 变量体系 ---------- */
 
-/* 国风主题变量 */
-:root,
-[data-card-theme="guofeng"] {
+/* 默认主题（浅色 + 国风） */
+:root {
   --color-primary: #B83A2F;
   --color-primary-hover: #9A2E24;
   --color-primary-light: #FADBD8;
@@ -43,7 +42,7 @@
   --bg-overlay: rgba(242, 237, 228, 0.75);
 }
 
-/* 和风主题变量 */
+/* 和风主题覆盖（浅色） */
 [data-card-theme="japanese"] {
   --color-primary: #C97B8A;
   --color-primary-hover: #B56575;
@@ -76,12 +75,9 @@
   --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.08);
   --card-radius: 14px;
-
-  --transition-fast: 150ms ease;
-  --transition-base: 300ms ease;
 }
 
-/* 深色主题 - 夜墨 */
+/* 深色主题 - 夜墨（国风暗色） */
 [data-theme="dark"][data-card-theme="guofeng"] {
   --color-primary: #E07060;
   --color-primary-hover: #F08070;
@@ -109,9 +105,11 @@
   --card-border: rgba(180, 140, 100, 0.12);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --bg-overlay: rgba(26, 21, 16, 0.85);
 }
 
-/* 深色主题 - 夜樱 */
+/* 深色主题 - 夜樱（和风暗色） */
 [data-theme="dark"][data-card-theme="japanese"] {
   --color-primary: #E8A0B0;
   --color-primary-hover: #F0B8C0;
@@ -139,6 +137,8 @@
   --card-border: rgba(160, 140, 140, 0.1);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --bg-overlay: rgba(30, 24, 26, 0.85);
 }
 
 /* ---------- 2. 重置与基础 ---------- */
@@ -759,7 +759,7 @@ button {
 }
 
 .card-theme-japanese .card-face--back::after {
-  content: '\u2741';
+  content: '\274B';
   position: absolute;
   font-size: 1.4rem;
   color: rgba(255, 255, 255, 0.1);
@@ -769,12 +769,20 @@ button {
 /* 卡牌正面 */
 .card-face--front {
   transform: rotateY(180deg);
-  background: linear-gradient(145deg, #FFFBF5 0%, #F5EDE0 100%);
+  background: linear-gradient(145deg, #FFF9F5 0%, #F5EDE0 100%);
   color: var(--color-text-primary);
 }
 
 [data-theme="dark"] .card-face--front {
   background: linear-gradient(145deg, #2A2420 0%, #1A1612 100%);
+}
+
+[data-theme="dark"][data-card-theme="guofeng"] .card-face--front {
+  background: linear-gradient(145deg, #2A2420 0%, #1A1612 100%);
+}
+
+[data-theme="dark"][data-card-theme="japanese"] .card-face--front {
+  background: linear-gradient(145deg, #2E282A 0%, #1E181A 100%);
 }
 
 /* 卡牌图片 */
