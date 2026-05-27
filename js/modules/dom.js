@@ -17,7 +17,7 @@ export default function getDOMElements() {
     difficultyBtns: document.querySelectorAll('.difficulty-btn'),
     timedModeToggle: document.getElementById('timed-mode-toggle'),
     themeToggle: document.getElementById('theme-toggle'),
-    cardThemeBtns: document.querySelectorAll('.card-theme-btn'),
+    skinToggleBtn: document.getElementById('skin-toggle-btn'),
     soundToggle: document.getElementById('sound-toggle'),
     bgmToggle: document.getElementById('bgm-toggle'),
     startBtn: document.getElementById('start-btn'),

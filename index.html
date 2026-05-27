@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>记忆翻牌小游戏</title>
-  <link rel="stylesheet" href="css/style.css?v=5">
+  <link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
   <!-- 开始界面 -->
@@ -35,24 +35,23 @@
       <!-- 限时模式开关 -->
       <div class="toggle-section">
         <label class="toggle-label" for="timed-mode-toggle">
-          <span class="toggle-text">限时模式</span>
+          <span class="toggle-text">限时挑战</span>
           <input type="checkbox" id="timed-mode-toggle" class="toggle-input" checked>
           <span class="toggle-slider" aria-hidden="true"></span>
         </label>
+        <p class="toggle-hint">关闭后所有难度均不限时</p>
       </div>
 
-      <!-- 卡牌主题切换 -->
+      <!-- 卡面选择 -->
       <div class="theme-section">
-        <h2 class="section-title">卡牌风格</h2>
-        <div class="card-theme-options" role="radiogroup" aria-label="卡牌主题选择">
-          <button class="card-theme-btn card-theme-btn--active" data-card-theme="guofeng" role="radio" aria-checked="true">
-            <span class="card-theme-label">国风</span>
-          </button>
-          <button class="card-theme-btn" data-card-theme="japanese" role="radio" aria-checked="false">
-            <span class="card-theme-label">和风</span>
-          </button>
-        </div>
+        <button id="skin-toggle-btn" class="skin-toggle-btn" aria-label="选择卡面">
+          <span class="skin-toggle-icon">🎨</span>
+          <span class="skin-toggle-text">选择卡面</span>
+        </button>
       </div>
+
+      <!-- 卡面选择面板（动态插入） -->
+      <div id="skin-panel" class="skin-panel" style="display: none;"></div>
 
       <!-- 主题切换 -->
       <div class="theme-section">
@@ -201,6 +200,6 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=5"></script>
+  <script type="module" src="js/main.js?v=6"></script>
 </body>
 </html>

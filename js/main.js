@@ -3,25 +3,17 @@
  * 模块化重构版本，使用 ES6 Modules
  */
 
-import { GameState } from './modules/constants.js?v=5';
+import { GameState } from './modules/constants.js?v=6';
 import {
   createGameState,
   resetGameData,
   canFlipCard,
-  isAllMatched,
-  getDifficultyConfig,
-} from './modules/gameState.js?v=5';
+} from './modules/gameState.js?v=6';
 import {
   generateCards,
   renderGameBoard,
-  flipCard,
-  unflipCard,
-  markMatched,
-  markMismatch,
-  clearMismatch,
   lockAllCards,
-  showScoreFloat,
-} from './modules/cardRenderer.js?v=5';
+} from './modules/cardRenderer.js?v=6';
 import {
   initAudioContext,
   playSound,
@@ -29,14 +21,12 @@ import {
   playBGM,
   pauseBGM,
   isBGMEnabled,
-} from './modules/audio.js?v=5';
-import {
-  saveHighScore,
-  saveBestTime,
-  savePreferences,
-} from './modules/storage.js?v=5';
-import { startTimer, stopAll } from './modules/timer.js?v=5';
-import getDOMElements from './modules/dom.js?v=5';
+  toggleBGM,
+  setSoundEnabled,
+} from './modules/audio.js?v=6';
+import { savePreferences } from './modules/storage.js?v=6';
+import { startTimer, stopAll } from './modules/timer.js?v=6';
+import getDOMElements from './modules/dom.js?v=6';
 import {
   updateScoreBoard,
   updateHistoryDisplay,
@@ -49,8 +39,11 @@ import {
   toggleOverlay,
   updateWinOverlay,
   updateLoseOverlay,
-} from './modules/ui.js?v=5';
-import { calculateScore } from './modules/utils.js?v=5';
+} from './modules/ui.js?v=6';
+import { handleMatchSuccess, handleMatchFail, handleWin, handleCardFlip } from './modules/gameLogic.js?v=6';
+import { getDifficultyConfig } from './modules/gameState.js?v=6';
+import { renderSkinSelector, updateSkinSelectionUI } from './modules/skinUI.js?v=6';
+import { getSelectedSkinId, setSelectedSkin, findSkinById } from './modules/cardSkins.js?v=6';
 
 // ============================================
 // 全局状态
@@ -107,7 +100,7 @@ function enterPlayingState(prevState) {
     || prevState === GameState.LOST) {
     resetGameData(state);
     state.cards = generateCards(state);
-    renderGameBoard(state, dom.gameBoard, handleCardClick);
+    renderGameBoard(state, dom.gameBoard, onCardClick);
     switchScreen('game', dom);
   }
 
@@ -153,18 +146,6 @@ function enterWonState() {
   pauseBGM();
   lockAllCards(dom.gameBoard, true);
 
-  const finalScore = calculateScore({
-    matchedPairs: state.matchedPairs,
-    elapsedSeconds: state.elapsedSeconds,
-    errors: state.errors,
-    config: getDifficultyConfig(state),
-  });
-
-  state.highScore = saveHighScore(finalScore, state.highScore);
-  state.bestTime = saveBestTime(state.elapsedSeconds, state.bestTime);
-  savePreferences(state);
-
-  setTimeout(() => playSound('victory'), 300);
   setTimeout(() => {
     updateWinOverlay(state, dom);
     toggleOverlay(dom.winOverlay, true);
@@ -209,16 +190,10 @@ function enterIdleState() {
  * 处理卡牌点击
  * @param {number} cardId
  */
-function handleCardClick(cardId) {
+function onCardClick(cardId) {
   if (!canFlipCard(state, cardId)) return;
 
-  playSound('flip');
-  flipCard(dom.gameBoard, cardId);
-  state.flippedCards.push(cardId);
-
-  if (state.flippedCards.length === 2) {
-    checkMatch();
-  }
+  handleCardFlip(state, dom, cardId, checkMatch);
 }
 
 /**
@@ -232,71 +207,10 @@ function checkMatch() {
   state.isAnimating = true;
 
   if (card1.src === card2.src) {
-    handleMatchSuccess(id1, id2);
+    handleMatchSuccess(state, dom, id1, id2, () => handleWin(state, dom, transitionTo));
   } else {
-    handleMatchFail(id1, id2);
+    handleMatchFail(state, dom, id1, id2);
   }
-}
-
-/**
- * 配对成功处理
- * @param {number} id1
- * @param {number} id2
- */
-function handleMatchSuccess(id1, id2) {
-  const card1 = state.cards[id1];
-  const card2 = state.cards[id2];
-  card1.matched = true;
-  card2.matched = true;
-
-  state.matchedPairs += 1;
-
-  setTimeout(() => {
-    playSound('match');
-    markMatched(dom.gameBoard, id1);
-    markMatched(dom.gameBoard, id2);
-
-    const config = getDifficultyConfig(state);
-    const timeBonus = Math.max(0, config.timeBase - state.elapsedSeconds) * config.timeCoeff;
-    const points = 100 + timeBonus;
-    showScoreFloat(dom.gameBoard, id1, points);
-
-    updateScoreBoard(state, dom);
-    state.flippedCards = [];
-    state.isAnimating = false;
-
-    if (isAllMatched(state)) {
-      transitionTo(GameState.WON);
-    }
-  }, 500);
-}
-
-/**
- * 配对失败处理
- * @param {number} id1
- * @param {number} id2
- */
-function handleMatchFail(id1, id2) {
-  state.errors += 1;
-  updateScoreBoard(state, dom);
-
-  markMismatch(dom.gameBoard, id1);
-  markMismatch(dom.gameBoard, id2);
-
-  setTimeout(() => {
-    playSound('mismatch');
-    clearMismatch(dom.gameBoard, id1);
-    clearMismatch(dom.gameBoard, id2);
-
-    unflipCard(dom.gameBoard, id1);
-    unflipCard(dom.gameBoard, id2);
-
-    state.flippedCards = [];
-
-    setTimeout(() => {
-      state.isAnimating = false;
-    }, 400);
-  }, 1300);
 }
 
 // ============================================
@@ -330,16 +244,26 @@ function bindEvents() {
     savePreferences(state);
   });
 
-  // 卡牌主题选择
-  if (dom.cardThemeBtns) {
-    dom.cardThemeBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        playSound('button');
-        state.cardTheme = btn.dataset.cardTheme;
-        document.body.setAttribute('data-card-theme', state.cardTheme);
-        updateCardThemeUI(state, dom);
-        savePreferences(state);
-      });
+  // 卡面选择按钮
+  if (dom.skinToggleBtn) {
+    dom.skinToggleBtn.addEventListener('click', () => {
+      playSound('button');
+      const panel = document.getElementById('skin-panel');
+      if (panel) {
+        const isHidden = panel.style.display === 'none';
+        panel.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          panel.innerHTML = '';
+          renderSkinSelector(panel, (skinId) => {
+            const skin = findSkinById(skinId);
+            if (skin) {
+              state.cardTheme = skin.seriesId;
+              document.body.setAttribute('data-card-theme', skin.seriesId);
+              savePreferences(state);
+            }
+          });
+        }
+      }
     });
   }
 
@@ -347,6 +271,7 @@ function bindEvents() {
   if (dom.soundToggle) {
     dom.soundToggle.addEventListener('change', (e) => {
       state.soundEnabled = e.target.checked;
+      setSoundEnabled(state.soundEnabled);
       savePreferences(state);
     });
   }
@@ -355,12 +280,7 @@ function bindEvents() {
   if (dom.bgmToggle) {
     dom.bgmToggle.addEventListener('change', (e) => {
       const enabled = e.target.checked;
-      if (enabled) {
-        playBGM();
-      } else {
-        pauseBGM();
-      }
-      state.bgmEnabled = enabled;
+      state.bgmEnabled = toggleBGM(enabled);
       savePreferences(state);
     });
   }
@@ -403,7 +323,7 @@ function bindEvents() {
     stopAll();
     resetGameData(state);
     state.cards = generateCards(state);
-    renderGameBoard(state, dom.gameBoard, handleCardClick);
+    renderGameBoard(state, dom.gameBoard, onCardClick);
     transitionTo(GameState.PLAYING);
   });
 
@@ -415,7 +335,7 @@ function bindEvents() {
     stopAll();
     resetGameData(state);
     state.cards = generateCards(state);
-    renderGameBoard(state, dom.gameBoard, handleCardClick);
+    renderGameBoard(state, dom.gameBoard, onCardClick);
     transitionTo(GameState.PLAYING);
   });
 
@@ -476,11 +396,17 @@ function init() {
 
   updateDifficultyUI(state, dom);
   updateThemeUI(state, dom);
-  updateCardThemeUI(state, dom);
   updateSoundUI(state, dom);
   updateBGMUI(isBGMEnabled(), dom);
   updateHistoryDisplay(state, dom);
   dom.timedModeToggle.checked = state.timedMode;
+
+  const selectedSkin = getSelectedSkinId();
+  const skin = findSkinById(selectedSkin);
+  if (skin) {
+    state.cardTheme = skin.seriesId;
+    document.body.setAttribute('data-card-theme', skin.seriesId);
+  }
 
   bindEvents();
 

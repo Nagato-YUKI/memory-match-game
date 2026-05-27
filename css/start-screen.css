@@ -1,0 +1,306 @@
+/* ============================================
+   开始界面样式
+   ============================================ */
+
+.screen {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.screen--active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.start-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 36px 28px;
+  text-align: center;
+  background: var(--color-bg-elevated);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  margin: 16px;
+  position: relative;
+}
+
+/* 国风金色边角装饰 */
+[data-card-theme="guofeng"] .start-container::before,
+[data-card-theme="guofeng"] .start-container::after {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--color-accent-gold);
+  opacity: 0.5;
+}
+
+[data-card-theme="guofeng"] .start-container::before {
+  top: 10px;
+  left: 10px;
+  border-right: none;
+  border-bottom: none;
+}
+
+[data-card-theme="guofeng"] .start-container::after {
+  bottom: 10px;
+  right: 10px;
+  border-left: none;
+  border-top: none;
+}
+
+/* 和风樱花装饰 */
+[data-card-theme="japanese"] .start-container::before {
+  content: '❋';
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  opacity: 0.4;
+}
+
+[data-card-theme="japanese"] .start-container::after {
+  content: '❋';
+  position: absolute;
+  bottom: 8px;
+  left: 12px;
+  font-size: 1rem;
+  color: var(--color-primary);
+  opacity: 0.3;
+  transform: rotate(180deg);
+}
+
+.game-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 6px;
+  letter-spacing: 0.15em;
+}
+
+.game-subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  margin-bottom: 28px;
+  letter-spacing: 0.1em;
+}
+
+/* 难度选择 */
+.difficulty-section {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+  text-align: left;
+  letter-spacing: 0.05em;
+}
+
+.difficulty-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.difficulty-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+  text-align: left;
+  min-height: 44px;
+  position: relative;
+}
+
+.difficulty-btn:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.difficulty-btn--active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.difficulty-btn--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background-color: var(--color-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+.difficulty-label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.difficulty-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* 开关 */
+.toggle-section {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background-color: var(--color-text-muted);
+  border-radius: 11px;
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform var(--transition-fast);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: var(--color-primary);
+}
+
+.toggle-input:checked + .toggle-slider::after {
+  transform: translateX(18px);
+}
+
+.toggle-hint {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  margin-left: 50px;
+}
+
+/* 卡牌主题选择 */
+.card-theme-options {
+  display: flex;
+  gap: 10px;
+}
+
+.card-theme-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  min-height: 40px;
+  cursor: pointer;
+}
+
+.card-theme-btn:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--card-shadow-hover);
+}
+
+.card-theme-btn--active {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* 主题切换 */
+.theme-section {
+  margin-bottom: 20px;
+}
+
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+  min-height: 40px;
+}
+
+.theme-btn:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+.theme-icon {
+  font-size: 1rem;
+}
+
+/* 历史记录 */
+.history-section {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--card-border);
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.history-label {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+}
+
+.history-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-accent-gold);
+}

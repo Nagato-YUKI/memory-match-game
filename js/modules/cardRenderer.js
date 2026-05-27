@@ -3,8 +3,9 @@
  * @module cardRenderer
  */
 
-import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=5';
-import { shuffleArray } from './utils.js?v=5';
+import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=6';
+import { shuffleArray } from './utils.js?v=6';
+import { getCurrentBackImage } from './cardSkins.js?v=6';
 
 /**
  * 生成卡牌数据
@@ -19,11 +20,13 @@ export function generateCards(state) {
   const cardPairs = [...selectedCards, ...selectedCards];
   const shuffled = shuffleArray(cardPairs);
 
+  const backImage = getCurrentBackImage();
+
   return shuffled.map((card, index) => ({
     ...card,
     index,
     matched: false,
-    backImg: card.backImg || './assets/card-back.png',
+    backImg: backImage,
   }));
 }
 
@@ -64,15 +67,8 @@ function createCardElement(card, onCardClick) {
 
   const back = document.createElement('div');
   back.className = 'card-face card-face--back';
-
-  const backImg = document.createElement('img');
-  backImg.src = card.backImg;
-  backImg.alt = '卡牌背面';
-  backImg.className = 'card-back-image';
-  backImg.setAttribute('aria-hidden', 'true');
-  backImg.loading = 'eager';
-
-  back.appendChild(backImg);
+  back.style.backgroundImage = `url('${card.backImg}')`;
+  back.setAttribute('aria-hidden', 'true');
 
   const front = document.createElement('div');
   front.className = 'card-face card-face--front';
@@ -83,6 +79,13 @@ function createCardElement(card, onCardClick) {
   img.className = 'card-image';
   img.setAttribute('aria-hidden', 'true');
   img.loading = 'lazy';
+  img.onerror = () => {
+    img.style.display = 'none';
+    const fallback = document.createElement('div');
+    fallback.className = 'card-fallback';
+    fallback.textContent = card.name;
+    front.appendChild(fallback);
+  };
 
   front.appendChild(img);
   inner.appendChild(back);

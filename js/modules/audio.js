@@ -4,6 +4,7 @@
  */
 
 import { STORAGE_KEYS } from './constants.js?v=5';
+import { getSoundConfig, playVictoryMelody } from './soundEffects.js?v=5';
 
 /** @type {AudioContext|null} */
 let audioContext = null;
@@ -13,6 +14,9 @@ let bgmElement = null;
 
 /** @type {boolean} */
 let bgmEnabled = true;
+
+/** @type {boolean} */
+let soundEnabled = true;
 
 /**
  * 初始化音频上下文（用户首次交互后调用）
@@ -39,8 +43,8 @@ export function initBGM(src) {
   bgmElement.preload = 'auto';
   bgmElement.volume = 0.3;
 
-  // 读取用户偏好
   bgmEnabled = safeGetItem(STORAGE_KEYS.BGM_ENABLED, true);
+  soundEnabled = safeGetItem(STORAGE_KEYS.SOUND_ENABLED, true);
 }
 
 /**
@@ -64,10 +68,11 @@ export function pauseBGM() {
 
 /**
  * 切换 BGM 开关
+ * @param {boolean} [enabled] 指定状态，不传则切换
  * @returns {boolean} 切换后的状态
  */
-export function toggleBGM() {
-  bgmEnabled = !bgmEnabled;
+export function toggleBGM(enabled) {
+  bgmEnabled = enabled !== undefined ? enabled : !bgmEnabled;
   safeSetItem(STORAGE_KEYS.BGM_ENABLED, bgmEnabled);
 
   if (bgmEnabled) {
@@ -87,114 +92,71 @@ export function isBGMEnabled() {
 }
 
 /**
+ * 设置音效开关
+ * @param {boolean} enabled
+ */
+export function setSoundEnabled(enabled) {
+  soundEnabled = enabled;
+  safeSetItem(STORAGE_KEYS.SOUND_ENABLED, soundEnabled);
+}
+
+/**
+ * 获取音效开关状态
+ * @returns {boolean}
+ */
+export function isSoundEnabled() {
+  return soundEnabled;
+}
+
+/**
  * 播放音效
  * @param {string} type 音效类型
  */
 export function playSound(type) {
+  if (!soundEnabled) return;
   if (!audioContext) initAudioContext();
   if (!audioContext) return;
 
   try {
     const now = audioContext.currentTime;
+
+    if (type === 'victory') {
+      playVictoryMelody(audioContext, now);
+      return;
+    }
+
+    const config = getSoundConfig(audioContext, now);
+    const sound = config[type];
+    if (!sound) return;
+
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
 
-    switch (type) {
-      case 'flip':
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(800, now);
-        oscillator.frequency.exponentialRampToValueAtTime(400, now + 0.15);
-        gainNode.gain.setValueAtTime(0.15, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        oscillator.start(now);
-        oscillator.stop(now + 0.15);
-        break;
+    oscillator.type = sound.oscillator.type;
 
-      case 'match':
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(523.25, now);
-        oscillator.frequency.setValueAtTime(659.25, now + 0.1);
-        oscillator.frequency.setValueAtTime(783.99, now + 0.2);
-        gainNode.gain.setValueAtTime(0.2, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-        oscillator.start(now);
-        oscillator.stop(now + 0.3);
-        break;
-
-      case 'mismatch':
-        oscillator.type = 'triangle';
-        oscillator.frequency.setValueAtTime(392, now);
-        oscillator.frequency.exponentialRampToValueAtTime(196, now + 0.25);
-        gainNode.gain.setValueAtTime(0.1, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-        oscillator.start(now);
-        oscillator.stop(now + 0.25);
-        break;
-
-      case 'victory':
-        playVictorySound(now);
-        return;
-
-      case 'gameover':
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(300, now);
-        oscillator.frequency.exponentialRampToValueAtTime(150, now + 0.8);
-        gainNode.gain.setValueAtTime(0.12, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
-        oscillator.start(now);
-        oscillator.stop(now + 0.8);
-        break;
-
-      case 'button':
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(600, now);
-        gainNode.gain.setValueAtTime(0.08, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-        oscillator.start(now);
-        oscillator.stop(now + 0.08);
-        break;
-
-      default:
-        break;
+    const freq = sound.oscillator.frequency;
+    if (Array.isArray(freq[0])) {
+      oscillator.frequency.setValueAtTime(freq[0][0], freq[0][1]);
+      for (let i = 1; i < freq.length; i++) {
+        if (freq[i][0] !== undefined) {
+          oscillator.frequency.exponentialRampToValueAtTime(freq[i][0], freq[i][1]);
+        }
+      }
+    } else {
+      oscillator.frequency.setValueAtTime(freq[0], freq[1]);
     }
+
+    gainNode.gain.setValueAtTime(sound.gain.initial, now);
+    gainNode.gain.exponentialRampToValueAtTime(sound.gain.ramp[0], sound.gain.ramp[1]);
+
+    oscillator.start(now);
+    oscillator.stop(now + sound.duration);
   } catch (err) {
     console.warn('播放音效失败:', err);
   }
-}
-
-/**
- * 播放胜利旋律
- * @param {number} startTime
- */
-function playVictorySound(startTime) {
-  if (!audioContext) return;
-
-  const notes = [523.25, 587.33, 659.25, 783.99, 1046.5];
-  const durations = [0.15, 0.15, 0.15, 0.15, 0.4];
-
-  let currentTime = startTime;
-
-  notes.forEach((freq, index) => {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, currentTime);
-
-    gain.gain.setValueAtTime(0.18, currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, currentTime + durations[index]);
-
-    osc.start(currentTime);
-    osc.stop(currentTime + durations[index]);
-
-    currentTime += durations[index];
-  });
 }
 
 /**

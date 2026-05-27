@@ -1,0 +1,274 @@
+/* ============================================
+   游戏面板与卡牌样式
+   ============================================ */
+
+/* 分数板 */
+.score-board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 10px 14px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.score-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.score-value--gold {
+  color: var(--color-accent-gold);
+}
+
+.score-value--countdown {
+  color: var(--color-text-secondary);
+}
+
+.score-value--countdown.countdown--warning {
+  color: var(--color-accent-error);
+  animation: countdownBlink 1s infinite;
+}
+
+@keyframes countdownBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* 游戏控制栏 */
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* 游戏面板 */
+.game-board {
+  display: grid;
+  gap: 10px;
+  margin: 12px auto;
+  padding: 16px;
+  width: 100%;
+  max-width: 640px;
+  flex: 1;
+  align-content: start;
+  justify-content: center;
+  background: var(--color-bg-elevated);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  position: relative;
+}
+
+/* 游戏面板装饰 - 国风 */
+[data-card-theme="guofeng"] .game-board::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border: 1px dashed rgba(180, 140, 100, 0.15);
+  border-radius: calc(var(--card-radius) - 2px);
+  pointer-events: none;
+}
+
+/* 游戏面板装饰 - 和风 */
+[data-card-theme="japanese"] .game-board::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 1px solid rgba(160, 140, 140, 0.1);
+  border-radius: calc(var(--card-radius) - 4px);
+  pointer-events: none;
+}
+
+/* 网格布局类 */
+.game-board--4x3 {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 480px;
+}
+
+.game-board--4x4 {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 480px;
+}
+
+.game-board--6x4 {
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 640px;
+}
+
+.game-board--6x6 {
+  grid-template-columns: repeat(6, 1fr);
+  max-width: 640px;
+  gap: 8px;
+}
+
+/* 卡牌容器 */
+.card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  perspective: 800px;
+  cursor: pointer;
+  border-radius: var(--card-radius);
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* 卡牌面 */
+.card-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--card-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+/* 卡牌背面 - 统一使用风景图片 */
+.card-face--back {
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* 卡牌正面 */
+.card-face--front {
+  transform: rotateY(180deg);
+  background: linear-gradient(145deg, #FFF9F5 0%, #F5EDE0 100%);
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .card-face--front {
+  background: linear-gradient(145deg, #2A2420 0%, #1A1612 100%);
+}
+
+[data-theme="dark"][data-card-theme="guofeng"] .card-face--front {
+  background: linear-gradient(145deg, #2A2420 0%, #1A1612 100%);
+}
+
+[data-theme="dark"][data-card-theme="japanese"] .card-face--front {
+  background: linear-gradient(145deg, #2E282A 0%, #1E181A 100%);
+}
+
+/* 卡牌图片 */
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: calc(var(--card-radius) - 2px);
+  pointer-events: none;
+}
+
+.card-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 8px;
+}
+
+/* 卡牌状态 */
+.card.matched .card-inner {
+  animation: matchPulse 0.5s ease;
+}
+
+.card.matched .card-face--front {
+  box-shadow: 0 0 12px var(--color-accent-success-glow);
+  border-color: var(--color-accent-success);
+}
+
+.card.mismatch .card-face--front {
+  animation: mismatchShake 0.4s ease;
+  box-shadow: 0 0 12px var(--color-accent-error-glow);
+  border-color: var(--color-accent-error);
+}
+
+.card.locked {
+  cursor: default;
+  pointer-events: none;
+}
+
+.card.locked .card-inner {
+  opacity: 0.7;
+}
+
+@keyframes matchPulse {
+  0% { transform: rotateY(180deg) scale(1); }
+  50% { transform: rotateY(180deg) scale(1.08); }
+  100% { transform: rotateY(180deg) scale(1); }
+}
+
+@keyframes mismatchShake {
+  0%, 100% { transform: rotateY(180deg) translateX(0); }
+  25% { transform: rotateY(180deg) translateX(-4px); }
+  75% { transform: rotateY(180deg) translateX(4px); }
+}
+
+/* 浮动分数 */
+.score-float {
+  position: absolute;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-accent-gold);
+  pointer-events: none;
+  animation: scoreFloatUp 1s ease forwards;
+  z-index: 10;
+}
+
+@keyframes scoreFloatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-30px); }
+}

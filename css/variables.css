@@ -1,0 +1,138 @@
+/* ============================================
+   CSS 变量体系 - 主题色定义
+   ============================================ */
+
+/* 默认主题（浅色 + 国风） */
+:root {
+  --color-primary: #B83A2F;
+  --color-primary-hover: #9A2E24;
+  --color-primary-light: #FADBD8;
+
+  --color-secondary: #2C5F7C;
+  --color-secondary-hover: #1E4A63;
+  --color-secondary-light: #D6E8F0;
+
+  --color-bg: #F2EDE4;
+  --color-bg-elevated: #FAF7F2;
+  --color-bg-overlay: rgba(30, 20, 15, 0.7);
+
+  --color-text-primary: #2C1810;
+  --color-text-secondary: #6B5344;
+  --color-text-muted: #A89488;
+  --color-text-inverse: #FAF7F2;
+
+  --color-accent-success: #4A8B5E;
+  --color-accent-success-glow: rgba(74, 139, 94, 0.35);
+  --color-accent-error: #B83A2F;
+  --color-accent-error-glow: rgba(184, 58, 47, 0.35);
+  --color-accent-gold: #C9A227;
+
+  --card-border: rgba(180, 140, 100, 0.25);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --card-radius: 6px;
+
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+
+  --bg-image: url('../assets/images/bg/guofeng_bg.png');
+  --bg-overlay: rgba(242, 237, 228, 0.75);
+}
+
+/* 和风主题覆盖（浅色） */
+[data-card-theme="japanese"] {
+  --color-primary: #C97B8A;
+  --color-primary-hover: #B56575;
+  --color-primary-light: #F5E0E4;
+
+  --color-secondary: #5A8A7A;
+  --color-secondary-hover: #457A6A;
+  --color-secondary-light: #E0F0EA;
+
+  --color-bg: #F0EBE5;
+  --color-bg-elevated: #F8F5F2;
+  --color-bg-overlay: rgba(35, 25, 30, 0.65);
+
+  --color-text-primary: #2D2426;
+  --color-text-secondary: #6B5E60;
+  --color-text-muted: #A8989A;
+  --color-text-inverse: #F8F5F2;
+
+  --bg-image: url('../assets/images/bg/japanese_bg.png');
+  --bg-overlay: rgba(240, 235, 229, 0.75);
+
+  --color-accent-success: #5A9B7A;
+  --color-accent-success-glow: rgba(90, 155, 122, 0.3);
+  --color-accent-error: #C97B8A;
+  --color-accent-error-glow: rgba(201, 123, 138, 0.3);
+  --color-accent-gold: #B8A070;
+
+  --card-border: rgba(160, 140, 140, 0.2);
+  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 6px 20px rgba(0, 0, 0, 0.08);
+  --card-radius: 14px;
+}
+
+/* 深色主题 - 夜墨（国风暗色） */
+[data-theme="dark"][data-card-theme="guofeng"] {
+  --color-primary: #E07060;
+  --color-primary-hover: #F08070;
+  --color-primary-light: #3D1E1A;
+
+  --color-secondary: #5A9BC0;
+  --color-secondary-hover: #7AB8D8;
+  --color-secondary-light: #1A2D3D;
+
+  --color-bg: #1A1510;
+  --color-bg-elevated: #2A2420;
+  --color-bg-overlay: rgba(0, 0, 0, 0.8);
+
+  --color-text-primary: #E8E0D5;
+  --color-text-secondary: #B0A898;
+  --color-text-muted: #7A7068;
+  --color-text-inverse: #1A1510;
+
+  --color-accent-success: #5CBF70;
+  --color-accent-success-glow: rgba(92, 191, 112, 0.25);
+  --color-accent-error: #E07060;
+  --color-accent-error-glow: rgba(224, 112, 96, 0.25);
+  --color-accent-gold: #DDB840;
+
+  --card-border: rgba(180, 140, 100, 0.12);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  --bg-overlay: rgba(26, 21, 16, 0.85);
+}
+
+/* 深色主题 - 夜樱（和风暗色） */
+[data-theme="dark"][data-card-theme="japanese"] {
+  --color-primary: #E8A0B0;
+  --color-primary-hover: #F0B8C0;
+  --color-primary-light: #3D2A2E;
+
+  --color-secondary: #7AB8A0;
+  --color-secondary-hover: #9BD0B8;
+  --color-secondary-light: #1A2D28;
+
+  --color-bg: #1E181A;
+  --color-bg-elevated: #2E282A;
+  --color-bg-overlay: rgba(0, 0, 0, 0.8);
+
+  --color-text-primary: #F0E8E8;
+  --color-text-secondary: #C0B0B0;
+  --color-text-muted: #908080;
+  --color-text-inverse: #1E181A;
+
+  --color-accent-success: #7BC89A;
+  --color-accent-success-glow: rgba(123, 200, 154, 0.25);
+  --color-accent-error: #E8A0B0;
+  --color-accent-error-glow: rgba(232, 160, 176, 0.25);
+  --color-accent-gold: #D0C090;
+
+  --card-border: rgba(160, 140, 140, 0.1);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --bg-overlay: rgba(30, 24, 26, 0.85);
+}
