@@ -3,8 +3,8 @@
  * @module cardRenderer
  */
 
-import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js';
-import { shuffleArray } from './utils.js';
+import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=3';
+import { shuffleArray } from './utils.js?v=3';
 
 /**
  * 生成卡牌数据
@@ -20,9 +20,8 @@ export function generateCards(state) {
   const shuffled = shuffleArray(cardPairs);
 
   return shuffled.map((card, index) => ({
-    id: index,
-    symbol: card.src,
-    name: card.name,
+    ...card,
+    index,
     matched: false,
   }));
 }
@@ -55,7 +54,7 @@ export function renderGameBoard(state, gameBoard, onCardClick) {
 function createCardElement(card, onCardClick) {
   const cardEl = document.createElement('div');
   cardEl.className = 'card';
-  cardEl.dataset.id = card.id;
+  cardEl.dataset.id = card.index;
   cardEl.setAttribute('role', 'button');
   cardEl.setAttribute('aria-label', `卡牌 ${card.name}`);
 
@@ -69,10 +68,11 @@ function createCardElement(card, onCardClick) {
   front.className = 'card-face card-face--front';
 
   const img = document.createElement('img');
-  img.src = card.symbol;
+  img.src = card.src;
   img.alt = card.name;
   img.className = 'card-image';
   img.setAttribute('aria-hidden', 'true');
+  img.loading = 'lazy';
 
   front.appendChild(img);
   inner.appendChild(back);
@@ -80,11 +80,11 @@ function createCardElement(card, onCardClick) {
   cardEl.appendChild(inner);
 
   // 点击事件
-  cardEl.addEventListener('click', () => onCardClick(card.id));
+  cardEl.addEventListener('click', () => onCardClick(card.index));
   // 触屏事件（消除 300ms 延迟）
   cardEl.addEventListener('touchstart', (e) => {
     e.preventDefault();
-    onCardClick(card.id);
+    onCardClick(card.index);
   }, { passive: false });
 
   return cardEl;

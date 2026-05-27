@@ -3,14 +3,14 @@
  * 模块化重构版本，使用 ES6 Modules
  */
 
-import { GameState } from './modules/constants.js';
+import { GameState } from './modules/constants.js?v=3';
 import {
   createGameState,
   resetGameData,
   canFlipCard,
   isAllMatched,
   getDifficultyConfig,
-} from './modules/gameState.js';
+} from './modules/gameState.js?v=3';
 import {
   generateCards,
   renderGameBoard,
@@ -21,7 +21,7 @@ import {
   clearMismatch,
   lockAllCards,
   showScoreFloat,
-} from './modules/cardRenderer.js';
+} from './modules/cardRenderer.js?v=3';
 import {
   initAudioContext,
   playSound,
@@ -29,14 +29,14 @@ import {
   playBGM,
   pauseBGM,
   isBGMEnabled,
-} from './modules/audio.js';
+} from './modules/audio.js?v=3';
 import {
   saveHighScore,
   saveBestTime,
   savePreferences,
-} from './modules/storage.js';
-import { startTimer, stopAll } from './modules/timer.js';
-import getDOMElements from './modules/dom.js';
+} from './modules/storage.js?v=3';
+import { startTimer, stopAll } from './modules/timer.js?v=3';
+import getDOMElements from './modules/dom.js?v=3';
 import {
   updateScoreBoard,
   updateHistoryDisplay,
@@ -49,8 +49,8 @@ import {
   toggleOverlay,
   updateWinOverlay,
   updateLoseOverlay,
-} from './modules/ui.js';
-import { calculateScore } from './modules/utils.js';
+} from './modules/ui.js?v=3';
+import { calculateScore } from './modules/utils.js?v=3';
 
 // ============================================
 // 全局状态
@@ -231,7 +231,7 @@ function checkMatch() {
 
   state.isAnimating = true;
 
-  if (card1.symbol === card2.symbol) {
+  if (card1.src === card2.src) {
     handleMatchSuccess(id1, id2);
   } else {
     handleMatchFail(id1, id2);
@@ -388,7 +388,7 @@ function bindEvents() {
       lockAllCards(dom.gameBoard, false);
       state.cards.forEach((card) => {
         if (card.matched) {
-          const el = dom.gameBoard.querySelector(`.card[data-id="${card.id}"]`);
+          const el = dom.gameBoard.querySelector(`.card[data-id="${card.index}"]`);
           if (el) el.classList.add('locked');
         }
       });
@@ -462,6 +462,11 @@ function bindEvents() {
  * 游戏初始化
  */
 function init() {
+  const savedTheme = localStorage.getItem('mmg_last_card_theme');
+  if (savedTheme && !['guofeng', 'japanese'].includes(JSON.parse(savedTheme))) {
+    localStorage.setItem('mmg_last_card_theme', JSON.stringify('guofeng'));
+  }
+
   dom = getDOMElements();
 
   document.body.setAttribute('data-card-theme', state.cardTheme);

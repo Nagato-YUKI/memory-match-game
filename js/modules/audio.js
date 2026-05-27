@@ -3,7 +3,7 @@
  * @module audio
  */
 
-import { STORAGE_KEYS } from './constants.js';
+import { STORAGE_KEYS } from './constants.js?v=3';
 
 /** @type {AudioContext|null} */
 let audioContext = null;

@@ -21,6 +21,7 @@ module.exports = {
     'no-param-reassign': ['error', { props: false }],
     'no-plusplus': 'off',
     'no-bitwise': 'off',
+    'import/no-unresolved': 'off',
   },
   globals: {
     AudioContext: 'readonly',

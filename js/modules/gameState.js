@@ -3,8 +3,8 @@
  * @module gameState
  */
 
-import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js';
-import { loadSaveData } from './storage.js';
+import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js?v=3';
+import { loadSaveData } from './storage.js?v=3';
 
 /**
  * 创建初始游戏状态
@@ -13,12 +13,14 @@ import { loadSaveData } from './storage.js';
 export function createGameState() {
   const saved = loadSaveData();
 
+  const validCardTheme = CARD_THEMES[saved.cardTheme] ? saved.cardTheme : 'guofeng';
+
   return {
     state: GameState.IDLE,
     difficulty: saved.difficulty,
     timedMode: true,
     theme: saved.theme,
-    cardTheme: saved.cardTheme,
+    cardTheme: validCardTheme,
     soundEnabled: saved.soundEnabled,
     bgmEnabled: saved.bgmEnabled,
 
@@ -65,7 +67,7 @@ export function getDifficultyConfig(state) {
  * @returns {Object}
  */
 export function getCardThemeConfig(state) {
-  return CARD_THEMES[state.cardTheme] || CARD_THEMES.default;
+  return CARD_THEMES[state.cardTheme] || CARD_THEMES.guofeng;
 }
 
 /**
