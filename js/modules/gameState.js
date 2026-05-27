@@ -3,8 +3,8 @@
  * @module gameState
  */
 
-import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js?v=5';
-import { loadSaveData } from './storage.js?v=5';
+import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js?v=7';
+import { loadSaveData } from './storage.js?v=7';
 
 /**
  * 创建初始游戏状态
@@ -18,7 +18,7 @@ export function createGameState() {
   return {
     state: GameState.IDLE,
     difficulty: saved.difficulty,
-    timedMode: true,
+    timedMode: false,
     theme: saved.theme,
     cardTheme: validCardTheme,
     soundEnabled: saved.soundEnabled,

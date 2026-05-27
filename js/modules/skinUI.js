@@ -10,7 +10,7 @@ import {
   getSkinProgress,
   getSelectedSkinId,
   setSelectedSkin,
-} from './cardSkins.js?v=6';
+} from './cardSkins.js?v=7';
 
 /**
  * 渲染卡面选择面板

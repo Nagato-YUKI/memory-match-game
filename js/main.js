@@ -3,17 +3,17 @@
  * 模块化重构版本，使用 ES6 Modules
  */
 
-import { GameState } from './modules/constants.js?v=6';
+import { GameState } from './modules/constants.js?v=7';
 import {
   createGameState,
   resetGameData,
   canFlipCard,
-} from './modules/gameState.js?v=6';
+} from './modules/gameState.js?v=7';
 import {
   generateCards,
   renderGameBoard,
   lockAllCards,
-} from './modules/cardRenderer.js?v=6';
+} from './modules/cardRenderer.js?v=7';
 import {
   initAudioContext,
   playSound,
@@ -23,10 +23,10 @@ import {
   isBGMEnabled,
   toggleBGM,
   setSoundEnabled,
-} from './modules/audio.js?v=6';
+} from './modules/audio.js?v=7';
 import { savePreferences } from './modules/storage.js?v=6';
-import { startTimer, stopAll } from './modules/timer.js?v=6';
-import getDOMElements from './modules/dom.js?v=6';
+import { startTimer, stopAll } from './modules/timer.js?v=7';
+import getDOMElements from './modules/dom.js?v=7';
 import {
   updateScoreBoard,
   updateHistoryDisplay,
@@ -39,11 +39,11 @@ import {
   toggleOverlay,
   updateWinOverlay,
   updateLoseOverlay,
-} from './modules/ui.js?v=6';
-import { handleMatchSuccess, handleMatchFail, handleWin, handleCardFlip } from './modules/gameLogic.js?v=6';
-import { getDifficultyConfig } from './modules/gameState.js?v=6';
+} from './modules/ui.js?v=7';
+import { handleMatchSuccess, handleMatchFail, handleWin, handleCardFlip } from './modules/gameLogic.js?v=7';
+import { getDifficultyConfig } from './modules/gameState.js?v=7';
 import { renderSkinSelector, updateSkinSelectionUI } from './modules/skinUI.js?v=6';
-import { getSelectedSkinId, setSelectedSkin, findSkinById } from './modules/cardSkins.js?v=6';
+import { getSelectedSkinId, setSelectedSkin, findSkinById } from './modules/cardSkins.js?v=7';
 
 // ============================================
 // 全局状态

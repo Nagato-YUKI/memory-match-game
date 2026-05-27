@@ -4,8 +4,8 @@
  * @module cardSkins
  */
 
-import { STORAGE_KEYS } from './constants.js?v=6';
-import { safeGetItem, safeSetItem } from './storage.js?v=6';
+import { STORAGE_KEYS } from './constants.js?v=7';
+import { safeGetItem, safeSetItem } from './storage.js?v=7';
 
 /** 卡面皮肤定义 - 纯风景画面 */
 export const CARD_SKINS = {
