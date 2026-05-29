@@ -3,8 +3,8 @@
  * @module ui
  */
 
-import { formatTime, calculateScore } from './utils.js?v=7';
-import { getDifficultyConfig } from './gameState.js?v=7';
+import { formatTime, calculateScore } from './utils.js?v=8';
+import { getDifficultyConfig } from './gameState.js?v=8';
 
 /**
  * 更新分数板显示

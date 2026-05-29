@@ -21,6 +21,9 @@ export const STORAGE_KEYS = {
   LAST_CARD_THEME: 'mmg_last_card_theme',
   SOUND_ENABLED: 'mmg_sound_enabled',
   BGM_ENABLED: 'mmg_bgm_enabled',
+  UNLOCKED_SKINS: 'mmg_unlocked_skins',
+  SELECTED_SKIN: 'mmg_selected_skin',
+  TOTAL_SCORE: 'mmg_total_score',
 };
 
 /** 难度配置 */

@@ -3,9 +3,9 @@
  * @module cardRenderer
  */
 
-import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=7';
-import { shuffleArray } from './utils.js?v=7';
-import { getCurrentBackImage } from './cardSkins.js?v=7';
+import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=8';
+import { shuffleArray } from './utils.js?v=8';
+import { getCurrentBackImage } from './cardSkins.js?v=8';
 
 /**
  * 生成卡牌数据
@@ -20,7 +20,7 @@ export function generateCards(state) {
   const cardPairs = [...selectedCards, ...selectedCards];
   const shuffled = shuffleArray(cardPairs);
 
-  const backImage = getCurrentBackImage();
+  const backImage = getCurrentBackImage(state.cardTheme);
 
   return shuffled.map((card, index) => ({
     ...card,

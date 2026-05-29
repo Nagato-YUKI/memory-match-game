@@ -3,11 +3,11 @@
  * @module gameLogic
  */
 
-import { GameState } from './constants.js?v=7';
-import { getDifficultyConfig, isAllMatched } from './gameState.js?v=7';
-import { calculateScore } from './utils.js?v=7';
-import { saveHighScore, saveBestTime, savePreferences } from './storage.js?v=7';
-import { playSound, isSoundEnabled } from './audio.js?v=7';
+import { GameState } from './constants.js?v=8';
+import { getDifficultyConfig, isAllMatched } from './gameState.js?v=8';
+import { calculateScore } from './utils.js?v=8';
+import { saveHighScore, saveBestTime, savePreferences } from './storage.js?v=8';
+import { playSound } from './audio.js?v=8';
 import {
   flipCard,
   unflipCard,
@@ -15,9 +15,9 @@ import {
   markMismatch,
   clearMismatch,
   showScoreFloat,
-} from './cardRenderer.js?v=7';
-import { updateScoreBoard } from './ui.js?v=7';
-import { addTotalScore, checkAndUnlockSkins } from './cardSkins.js?v=7';
+} from './cardRenderer.js?v=8';
+import { updateScoreBoard } from './ui.js?v=8';
+import { addTotalScore, checkAndUnlockSkins } from './cardSkins.js?v=8';
 
 /**
  * 处理配对成功
@@ -106,7 +106,7 @@ export function handleWin(state, dom, transitionTo) {
   addTotalScore(finalScore);
   const newUnlocks = checkAndUnlockSkins();
   if (newUnlocks.length > 0 && dom.startScreen) {
-    import('./skinUI.js').then((skinUI) => {
+    import('./skinUI.js?v=8').then((skinUI) => {
       skinUI.showUnlockNotification(newUnlocks, document.body);
     });
   }

@@ -3,8 +3,8 @@
  * @module audio
  */
 
-import { STORAGE_KEYS } from './constants.js?v=7';
-import { getSoundConfig, playVictoryMelody } from './soundEffects.js?v=7';
+import { STORAGE_KEYS } from './constants.js?v=8';
+import { getSoundConfig, playVictoryMelody } from './soundEffects.js?v=8';
 
 /** @type {AudioContext|null} */
 let audioContext = null;

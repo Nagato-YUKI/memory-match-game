@@ -5,20 +5,20 @@
 
 import {
   CARD_SKINS,
-  getAllSkins,
   isSkinUnlocked,
   getSkinProgress,
   getSelectedSkinId,
   setSelectedSkin,
-} from './cardSkins.js?v=7';
+} from './cardSkins.js?v=8';
 
 /**
  * 渲染卡面选择面板
  * @param {HTMLElement} container
  * @param {Function} onSelect
+ * @param {string} [currentTheme] - 当前卡牌主题
  * @returns {HTMLElement}
  */
-export function renderSkinSelector(container, onSelect) {
+export function renderSkinSelector(container, onSelect, currentTheme) {
   const panel = document.createElement('div');
   panel.className = 'skin-selector';
   panel.id = 'skin-selector';
@@ -29,7 +29,7 @@ export function renderSkinSelector(container, onSelect) {
   panel.appendChild(title);
 
   Object.values(CARD_SKINS).forEach((series) => {
-    const seriesEl = createSeriesElement(series, onSelect);
+    const seriesEl = createSeriesElement(series, onSelect, currentTheme);
     panel.appendChild(seriesEl);
   });
 
@@ -41,9 +41,10 @@ export function renderSkinSelector(container, onSelect) {
  * 创建系列元素
  * @param {Object} series
  * @param {Function} onSelect
+ * @param {string} [currentTheme]
  * @returns {HTMLElement}
  */
-function createSeriesElement(series, onSelect) {
+function createSeriesElement(series, onSelect, currentTheme) {
   const section = document.createElement('div');
   section.className = 'skin-series';
 
@@ -56,7 +57,7 @@ function createSeriesElement(series, onSelect) {
   grid.className = 'skin-grid';
 
   series.series.forEach((skin) => {
-    const card = createSkinCard(skin, onSelect);
+    const card = createSkinCard(skin, onSelect, currentTheme);
     grid.appendChild(card);
   });
 
@@ -68,12 +69,13 @@ function createSeriesElement(series, onSelect) {
  * 创建单个皮肤卡片
  * @param {Object} skin
  * @param {Function} onSelect
+ * @param {string} [currentTheme]
  * @returns {HTMLElement}
  */
-function createSkinCard(skin, onSelect) {
+function createSkinCard(skin, onSelect, currentTheme) {
   const unlocked = isSkinUnlocked(skin.id);
   const progress = getSkinProgress(skin.id);
-  const selected = getSelectedSkinId() === skin.id;
+  const selected = getSelectedSkinId(currentTheme) === skin.id;
 
   const card = document.createElement('div');
   card.className = 'skin-card';
@@ -144,7 +146,7 @@ function createSkinCard(skin, onSelect) {
     card.addEventListener('click', () => {
       setSelectedSkin(skin.id);
       onSelect(skin.id);
-      updateSkinSelectionUI();
+      updateSkinSelectionUI(currentTheme);
     });
   }
 
@@ -153,9 +155,10 @@ function createSkinCard(skin, onSelect) {
 
 /**
  * 更新皮肤选择 UI 的选中状态
+ * @param {string} [currentTheme] - 当前卡牌主题
  */
-export function updateSkinSelectionUI() {
-  const selectedId = getSelectedSkinId();
+export function updateSkinSelectionUI(currentTheme) {
+  const selectedId = getSelectedSkinId(currentTheme);
   document.querySelectorAll('.skin-card').forEach((card) => {
     const isSelected = card.dataset.skinId === selectedId;
     card.classList.toggle('skin-card--selected', isSelected);

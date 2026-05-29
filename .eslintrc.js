@@ -22,6 +22,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-bitwise': 'off',
     'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
   },
   globals: {
     AudioContext: 'readonly',

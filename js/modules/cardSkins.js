@@ -4,8 +4,8 @@
  * @module cardSkins
  */
 
-import { STORAGE_KEYS } from './constants.js?v=7';
-import { safeGetItem, safeSetItem } from './storage.js?v=7';
+import { STORAGE_KEYS } from './constants.js?v=8';
+import { safeGetItem, safeSetItem } from './storage.js?v=8';
 
 /** 卡面皮肤定义 - 纯风景画面 */
 export const CARD_SKINS = {
@@ -66,15 +66,15 @@ export const CARD_SKINS = {
 };
 
 /** 存储键名 */
-const SKIN_STORAGE_KEY = 'mmg_unlocked_skins';
-const SELECTED_SKIN_KEY = 'mmg_selected_skin';
+const SKIN_STORAGE_KEY = STORAGE_KEYS.UNLOCKED_SKINS;
+const SELECTED_SKIN_KEY = STORAGE_KEYS.SELECTED_SKIN;
 
 /**
  * 获取累计总分（用于解锁判断）
  * @returns {number}
  */
 export function getTotalScore() {
-  return safeGetItem('mmg_total_score', 0);
+  return safeGetItem(STORAGE_KEYS.TOTAL_SCORE, 0);
 }
 
 /**
@@ -82,8 +82,8 @@ export function getTotalScore() {
  * @param {number} score
  */
 export function addTotalScore(score) {
-  const current = getTotalScore();
-  safeSetItem('mmg_total_score', current + score);
+  const total = getTotalScore() + score;
+  safeSetItem(STORAGE_KEYS.TOTAL_SCORE, total);
 }
 
 /**
@@ -158,13 +158,14 @@ export function findSkinById(skinId) {
 
 /**
  * 获取当前选中的皮肤ID
+ * @param {string} [currentTheme] - 当前卡牌主题（'guofeng' 或 'japanese'）
  * @returns {string}
  */
-export function getSelectedSkinId() {
+export function getSelectedSkinId(currentTheme) {
   const saved = safeGetItem(SELECTED_SKIN_KEY, null);
   if (saved && isSkinUnlocked(saved)) return saved;
 
-  const theme = safeGetItem(STORAGE_KEYS.LAST_CARD_THEME, 'guofeng');
+  const theme = currentTheme || 'guofeng';
   if (theme === 'japanese') return 'japanese_temple';
   return 'guofeng_mountain';
 }
@@ -182,10 +183,11 @@ export function setSelectedSkin(skinId) {
 
 /**
  * 获取当前皮肤的背面图片URL
+ * @param {string} [currentTheme] - 当前卡牌主题
  * @returns {string}
  */
-export function getCurrentBackImage() {
-  const skinId = getSelectedSkinId();
+export function getCurrentBackImage(currentTheme) {
+  const skinId = getSelectedSkinId(currentTheme);
   const skin = findSkinById(skinId);
   return skin ? skin.backImage : CARD_SKINS.guofeng.series[0].backImage;
 }
