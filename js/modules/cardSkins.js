@@ -214,7 +214,11 @@ export function checkAndUnlockSkins() {
  */
 export function getSkinProgress(skinId) {
   const skin = findSkinById(skinId);
-  if (!skin) return { current: 0, required: 0, percentage: 0, isUnlocked: false };
+  if (!skin) {
+    return {
+      current: 0, required: 0, percentage: 0, isUnlocked: false,
+    };
+  }
 
   const total = getTotalScore();
   const isUnlocked = isSkinUnlocked(skinId);
