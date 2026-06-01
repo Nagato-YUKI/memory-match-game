@@ -12,3 +12,19 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Build/Dev tools
+package.json
+package-lock.json
+
+# Task planning files
+task_plan.md
+findings.md
+progress.md
+
+# Download scripts
+download_all.bat
+download_images.ps1
+fix_missing.ps1
+**/download_*.ps1
+**/download_*.bat
