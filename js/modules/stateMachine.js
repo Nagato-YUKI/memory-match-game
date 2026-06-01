@@ -3,23 +3,23 @@
  * @module stateMachine
  */
 
-import { GameState } from './constants.js?v=8';
+import { GameState } from './constants.js?v=10';
 import {
   resetGameData,
   getDifficultyConfig,
-} from './gameState.js?v=8';
+} from './gameState.js?v=10';
 import {
   generateCards,
   renderGameBoard,
   lockAllCards,
-} from './cardRenderer.js?v=8';
+} from './cardRenderer.js?v=10';
 import {
   playBGM,
   pauseBGM,
   playSound,
-} from './audio.js?v=8';
-import { savePreferences, saveHighScore, saveBestTime } from './storage.js?v=8';
-import { startTimer, stopAll } from './timer.js?v=8';
+} from './audio.js?v=10';
+import { savePreferences, saveHighScore, saveBestTime } from './storage.js?v=10';
+import { startTimer, stopAll } from './timer.js?v=10';
 import {
   updateScoreBoard,
   updateHistoryDisplay,
@@ -27,9 +27,13 @@ import {
   toggleOverlay,
   updateWinOverlay,
   updateLoseOverlay,
-} from './ui.js?v=8';
-import { calculateScore } from './utils.js?v=8';
-import { addTotalScore, checkAndUnlockSkins } from './cardSkins.js?v=8';
+  showStartTransition,
+  showWinTransition,
+} from './ui.js?v=10';
+import { calculateScore } from './utils.js?v=10';
+import { addTotalScore, checkAndUnlockSkins } from './cardSkins.js?v=10';
+import { addLeaderboardEntry } from './leaderboard.js?v=10';
+import { checkAchievements } from './achievements.js?v=10';
 
 /**
  * 创建状态机
@@ -81,7 +85,35 @@ export function createStateMachine(state, dom, onCardClick) {
       resetGameData(state);
       state.cards = generateCards(state);
       renderGameBoard(state, dom.gameBoard, onCardClick);
-      switchScreen('game', dom);
+
+      // 显示开始过渡动画，动画结束后切换屏幕并启动计时
+      showStartTransition(dom, () => {
+        switchScreen('game', dom);
+
+        startTimer(() => {
+          state.elapsedSeconds += 1;
+          updateScoreBoard(state, dom);
+        });
+
+        if (state.timedMode) {
+          const { timeLimit } = getDifficultyConfig(state);
+
+          if (timeLimit) {
+            import('./timer.js?v=10').then((timer) => {
+              timer.startCountdown(timeLimit, (remaining) => {
+                state.countdownSeconds = remaining;
+                updateScoreBoard(state, dom);
+              }, () => {
+                transitionTo(GameState.LOST);
+              });
+            });
+          }
+        }
+
+        playBGM();
+        updateScoreBoard(state, dom);
+      });
+      return;
     }
 
     startTimer(() => {
@@ -93,7 +125,7 @@ export function createStateMachine(state, dom, onCardClick) {
       const { timeLimit } = getDifficultyConfig(state);
 
       if (timeLimit) {
-        import('./timer.js?v=8').then((timer) => {
+        import('./timer.js?v=10').then((timer) => {
           timer.startCountdown(timeLimit, (remaining) => {
             state.countdownSeconds = remaining;
             updateScoreBoard(state, dom);
@@ -119,6 +151,24 @@ export function createStateMachine(state, dom, onCardClick) {
   }
 
   /**
+   * 显示 Toast 通知
+   * @param {string} message
+   */
+  function showToast(message) {
+    const container = dom.toastContainer || document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast toast--show';
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.remove('toast--show');
+      toast.classList.add('toast--hide');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  }
+
+  /**
    * 进入 WON 状态
    */
   function enterWonState() {
@@ -141,17 +191,41 @@ export function createStateMachine(state, dom, onCardClick) {
     addTotalScore(finalScore);
     const newUnlocks = checkAndUnlockSkins();
     if (newUnlocks.length > 0 && dom.startScreen) {
-      import('./skinUI.js?v=8').then((skinUI) => {
+      import('./skinUI.js?v=10').then((skinUI) => {
         skinUI.showUnlockNotification(newUnlocks, document.body);
       });
     }
 
+    // 检查并解锁成就
+    const config = getDifficultyConfig(state);
+    const newlyUnlockedAchievements = checkAchievements(state, config);
+    if (newlyUnlockedAchievements.length > 0) {
+      import('./constants.js?v=10').then((constants) => {
+        const list = constants.ACHIEVEMENTS_LIST;
+        newlyUnlockedAchievements.forEach((id) => {
+          const ach = list.find((a) => a.id === id);
+          if (ach) {
+            setTimeout(() => showToast(`解锁新成就：${ach.name}`), 2000);
+          }
+        });
+      });
+    }
+
+    // 弹出昵称输入框并记录排行榜
+    setTimeout(() => {
+      const nickname = prompt('恭喜通关！请输入你的昵称（留空则为匿名玩家）：');
+      if (nickname !== null) {
+        addLeaderboardEntry(nickname, finalScore, state.elapsedSeconds, state.difficulty);
+      }
+    }, 1800);
+
     setTimeout(() => playSound('victory'), 300);
 
-    setTimeout(() => {
+    // 显示胜利过渡动画，动画结束后显示胜利界面
+    showWinTransition(dom, () => {
       updateWinOverlay(state, dom);
       toggleOverlay(dom.winOverlay, true);
-    }, 1500);
+    });
   }
 
   /**
@@ -164,7 +238,7 @@ export function createStateMachine(state, dom, onCardClick) {
     savePreferences(state);
 
     setTimeout(() => {
-      import('./audio.js?v=8').then((audio) => audio.playSound('gameover'));
+      import('./audio.js?v=10').then((audio) => audio.playSound('gameover'));
     }, 200);
     setTimeout(() => {
       updateLoseOverlay(state, dom);

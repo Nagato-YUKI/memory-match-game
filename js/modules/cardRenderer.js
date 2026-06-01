@@ -3,9 +3,9 @@
  * @module cardRenderer
  */
 
-import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=8';
-import { shuffleArray } from './utils.js?v=8';
-import { getCurrentBackImage } from './cardSkins.js?v=8';
+import { getCurrentThemeCards, getDifficultyConfig, getCardThemeConfig } from './gameState.js?v=10';
+import { shuffleArray } from './utils.js?v=10';
+import { getCurrentBackImage } from './cardSkins.js?v=10';
 
 /**
  * 生成卡牌数据

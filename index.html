@@ -4,11 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>记忆翻牌小游戏</title>
-  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/style.css?v=10">
+  <link rel="stylesheet" href="css/transition.css?v=10">
 </head>
 <body>
+  <!-- 加载画面 -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-content">
+      <h1 class="loading-title">记忆翻牌</h1>
+      <p class="loading-subtitle">挑战你的记忆力</p>
+      <div class="loading-spinner" aria-hidden="true"></div>
+      <p class="loading-text">加载中...</p>
+    </div>
+  </div>
+
   <!-- 开始界面 -->
-  <div id="start-screen" class="screen screen--active">
+  <div id="start-screen" class="screen">
     <div class="start-container">
       <h1 class="game-title">记忆翻牌</h1>
       <p class="game-subtitle">挑战你的记忆力</p>
@@ -79,8 +90,36 @@
         </label>
       </div>
 
+      <!-- 功能按钮 -->
+      <div class="feature-buttons">
+        <button id="leaderboard-btn" class="btn btn--secondary feature-btn">
+          <svg class="feature-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+            <path d="M4 22h16"/>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+          </svg>
+          <span>排行榜</span>
+        </button>
+        <button id="achievements-btn" class="btn btn--secondary feature-btn">
+          <svg class="feature-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="7"/>
+            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+          </svg>
+          <span>成就</span>
+        </button>
+      </div>
+
       <!-- 开始按钮 -->
-      <button id="start-btn" class="btn btn--primary btn--large">开始游戏</button>
+      <button id="start-btn" class="btn btn--primary btn--large start-btn-pulse">开始游戏</button>
+
+      <!-- 帮助按钮 -->
+      <button id="help-btn" class="btn btn--ghost btn--large">帮助</button>
+
+      <!-- 关于作者按钮 -->
+      <a href="resume.html" class="btn btn--ghost btn--large" style="display:inline-flex;text-decoration:none;">关于作者</a>
 
       <!-- 历史记录 -->
       <div class="history-section">
@@ -143,6 +182,7 @@
       <h2 class="overlay-title">游戏暂停</h2>
       <button id="resume-btn" class="btn btn--primary">继续游戏</button>
       <button id="pause-restart-btn" class="btn btn--secondary">重新开始</button>
+      <a href="resume.html" class="btn btn--ghost" style="display:inline-flex;text-decoration:none;margin-top:8px;">关于作者</a>
     </div>
   </div>
 
@@ -168,7 +208,8 @@
           <span id="win-multiplier" class="result-stat-value">1.0x</span>
         </div>
       </div>
-      <div class="result-buttons">
+      <div class="result-buttons result-buttons--vertical">
+        <button id="share-btn" class="btn btn--share">分享成绩</button>
         <button id="win-replay-btn" class="btn btn--primary">再玩一次</button>
         <button id="win-menu-btn" class="btn btn--secondary">返回菜单</button>
       </div>
@@ -200,6 +241,89 @@
     </div>
   </div>
 
-  <script type="module" src="js/main.js?v=8"></script>
+  <!-- 排行榜遮罩 -->
+  <div id="leaderboard-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content overlay-content--wide">
+      <h2 class="overlay-title">排行榜</h2>
+      <div class="leaderboard-sort">
+        <button id="leaderboard-sort-score" class="btn btn--small btn--active" data-sort="score">按分数</button>
+        <button id="leaderboard-sort-time" class="btn btn--small" data-sort="time">按时间</button>
+      </div>
+      <div class="leaderboard-table-wrapper">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>排名</th>
+              <th>昵称</th>
+              <th>分数</th>
+              <th>用时</th>
+              <th>难度</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <tr><td colspan="5" class="leaderboard-empty">暂无记录</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="leaderboard-actions">
+        <button id="leaderboard-clear-btn" class="btn btn--ghost btn--small">清空记录</button>
+        <button id="leaderboard-close-btn" class="btn btn--primary">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成就面板遮罩 -->
+  <div id="achievements-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content overlay-content--wide">
+      <h2 class="overlay-title">成就</h2>
+      <div id="achievements-grid" class="achievements-grid">
+        <!-- 动态插入成就卡片 -->
+      </div>
+      <button id="achievements-close-btn" class="btn btn--primary">关闭</button>
+    </div>
+  </div>
+
+  <!-- 过场动画遮罩 -->
+  <div id="transition-overlay" class="transition-overlay">
+    <div class="transition-overlay__bg"></div>
+    <div class="transition-overlay__glow">
+      <div class="transition-glow"></div>
+      <div class="transition-glow-ring"></div>
+    </div>
+    <div class="transition-overlay__text">
+      <h2 id="transition-title" class="transition-title">游戏开始</h2>
+      <p id="transition-subtitle" class="transition-subtitle">愿君好运</p>
+    </div>
+  </div>
+
+  <!-- Toast 通知容器 -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- 引导弹窗 -->
+  <div id="tutorial-overlay" class="overlay overlay--hidden">
+    <div class="overlay-content tutorial-content">
+      <h2 class="overlay-title">游戏指南</h2>
+      <div class="tutorial-section">
+        <h3 class="tutorial-subtitle">游戏规则</h3>
+        <p class="tutorial-text">点击卡牌翻转，找到相同的配对。全部配对完成即可通关！</p>
+      </div>
+      <div class="tutorial-section">
+        <h3 class="tutorial-subtitle">操作说明</h3>
+        <p class="tutorial-text">点击卡牌翻转 · 配对成功保持翻开 · 配对错误翻回</p>
+      </div>
+      <div class="tutorial-section">
+        <h3 class="tutorial-subtitle">难度说明</h3>
+        <p class="tutorial-text">简单(4×3) · 中等(4×4) · 困难(6×6)</p>
+      </div>
+      <label class="tutorial-checkbox-label">
+        <input type="checkbox" id="tutorial-dont-show" class="tutorial-checkbox">
+        <span class="tutorial-checkmark"></span>
+        <span class="tutorial-checkbox-text">下次不再显示</span>
+      </label>
+      <button id="tutorial-close-btn" class="btn btn--primary btn--large">我知道了</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js?v=10"></script>
 </body>
 </html>

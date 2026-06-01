@@ -24,6 +24,9 @@ export const STORAGE_KEYS = {
   UNLOCKED_SKINS: 'mmg_unlocked_skins',
   SELECTED_SKIN: 'mmg_selected_skin',
   TOTAL_SCORE: 'mmg_total_score',
+  LEADERBOARD: 'mmg_leaderboard',
+  ACHIEVEMENTS: 'mmg_achievements',
+  TUTORIAL_SHOWN: 'mmg_tutorial_shown',
 };
 
 /** 难度配置 */
@@ -116,6 +119,13 @@ export const BG_IMAGES = {
   guofeng: 'assets/images/bg/guofeng_bg.png',
   japanese: 'assets/images/bg/japanese_bg.png',
 };
+
+/** 成就列表常量 */
+export const ACHIEVEMENTS_LIST = [
+  { id: 'first_win', name: '首次通关', description: '完成任意难度的游戏', icon: '🏆' },
+  { id: 'perfect_game', name: '满分挑战', description: '零错误完成游戏', icon: '⭐' },
+  { id: 'speed_king', name: '速度之王', description: '30秒内完成简单难度', icon: '⚡' },
+];
 
 /** 主题配置 */
 export const CARD_THEMES = {

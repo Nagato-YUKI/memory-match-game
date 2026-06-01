@@ -3,8 +3,8 @@
  * @module gameState
  */
 
-import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js?v=8';
-import { loadSaveData } from './storage.js?v=8';
+import { GameState, DIFFICULTY_CONFIG, CARD_THEMES } from './constants.js?v=10';
+import { loadSaveData } from './storage.js?v=10';
 
 /**
  * 创建初始游戏状态

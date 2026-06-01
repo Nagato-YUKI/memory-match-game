@@ -1,0 +1,593 @@
+/* ============================================
+   过场动画样式
+   东方风格：金色光芒、粒子效果、书法文字
+   ============================================ */
+
+/* 全屏遮罩层 */
+.transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* 激活状态 */
+.transition-overlay--active {
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 遮罩背景层 - 径向渐变扩散 */
+.transition-overlay__bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(20, 10, 5, 0.95) 0%, rgba(10, 5, 2, 0.98) 100%);
+}
+
+/* 光芒容器 */
+.transition-overlay__glow {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 中心光芒 */
+.transition-glow {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.6) 0%, rgba(255, 180, 0, 0.2) 40%, transparent 70%);
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* 光芒环 */
+.transition-glow-ring {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  transform: scale(0);
+  opacity: 0;
+}
+
+/* 粒子 */
+.transition-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd700 0%, #ffb400 100%);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+  opacity: 0;
+}
+
+/* 文字容器 */
+.transition-overlay__text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* 主标题文字 - 发光效果增强 */
+.transition-title {
+  font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffd700;
+  text-shadow:
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 30px rgba(255, 215, 0, 0.6),
+    0 0 60px rgba(255, 180, 0, 0.4),
+    0 0 100px rgba(255, 150, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.3em;
+  margin: 0;
+  animation: textGlowPulse 2s ease-in-out infinite;
+}
+
+/* 文字发光脉动 */
+@keyframes textGlowPulse {
+  0%, 100% {
+    text-shadow:
+      0 0 10px rgba(255, 215, 0, 0.8),
+      0 0 30px rgba(255, 215, 0, 0.6),
+      0 0 60px rgba(255, 180, 0, 0.4),
+      0 0 100px rgba(255, 150, 0, 0.2),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    text-shadow:
+      0 0 20px rgba(255, 215, 0, 1),
+      0 0 50px rgba(255, 215, 0, 0.8),
+      0 0 90px rgba(255, 180, 0, 0.6),
+      0 0 140px rgba(255, 150, 0, 0.3),
+      0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 副标题文字 */
+.transition-subtitle {
+  font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  font-size: 1.2rem;
+  color: rgba(255, 215, 0, 0.8);
+  margin-top: 0.5rem;
+  letter-spacing: 0.2em;
+  text-shadow:
+    0 0 10px rgba(255, 215, 0, 0.5),
+    0 0 20px rgba(255, 180, 0, 0.3);
+}
+
+/* ============================================
+   卡牌飞散效果容器
+   ============================================ */
+
+.transition-cards {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 飞散卡牌 */
+.transition-card-fly {
+  position: absolute;
+  width: 60px;
+  height: 84px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  box-shadow:
+    0 0 15px rgba(255, 215, 0, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.3);
+  top: 50%;
+  left: 50%;
+  margin-top: -42px;
+  margin-left: -30px;
+  opacity: 0;
+  transform-style: preserve-3d;
+}
+
+/* 卡牌背面花纹 */
+.transition-card-fly::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.15) 0%, transparent 60%),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 8px,
+      rgba(255, 215, 0, 0.08) 8px,
+      rgba(255, 215, 0, 0.08) 16px
+    );
+}
+
+/* 卡牌中心图案 */
+.transition-card-fly::after {
+  content: '✦';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(255, 215, 0, 0.4);
+  font-size: 1.2rem;
+}
+
+/* ============================================
+   Confetti 纸屑效果
+   ============================================ */
+
+.transition-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+
+/* 纸屑基础样式 */
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  opacity: 0;
+}
+
+/* 方形纸屑 */
+.confetti-piece--square {
+  background-color: var(--confetti-color, #ffd700);
+}
+
+/* 条形纸屑 */
+.confetti-piece--bar {
+  width: 6px;
+  height: 16px;
+  background-color: var(--confetti-color, #ff6b6b);
+  border-radius: 2px;
+}
+
+/* 圆形纸屑 */
+.confetti-piece--circle {
+  border-radius: 50%;
+  background-color: var(--confetti-color, #4ecdc4);
+}
+
+/* 纸屑飘落动画 */
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) translateX(0);
+  }
+  25% {
+    transform: translateY(25vh) rotate(180deg) translateX(20px);
+  }
+  50% {
+    transform: translateY(50vh) rotate(360deg) translateX(-20px);
+  }
+  75% {
+    transform: translateY(75vh) rotate(540deg) translateX(15px);
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(110vh) rotate(720deg) translateX(0);
+  }
+}
+
+/* ============================================
+   游戏开始过渡动画
+   遮罩从中心向外扩散消失 + 卡牌飞散
+   ============================================ */
+
+@keyframes startGlowExpand {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes startBgShrink {
+  0% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0;
+  }
+}
+
+@keyframes startTextFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2) translateY(-20px);
+  }
+}
+
+/* 卡牌飞散动画 - 向四周飞出 */
+@keyframes cardFlyOut1 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50vw, -40vh) rotate(-720deg) scale(0.3);
+  }
+}
+
+@keyframes cardFlyOut2 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(50vw, -30vh) rotate(720deg) scale(0.3);
+  }
+}
+
+@keyframes cardFlyOut3 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-30vw, 50vh) rotate(-540deg) scale(0.3);
+  }
+}
+
+@keyframes cardFlyOut4 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(40vw, 40vh) rotate(540deg) scale(0.3);
+  }
+}
+
+@keyframes cardFlyOut5 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, -55vh) rotate(360deg) scale(0.3);
+  }
+}
+
+@keyframes cardFlyOut6 {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 55vh) rotate(-360deg) scale(0.3);
+  }
+}
+
+/* 开始动画激活状态 */
+.transition-overlay--start .transition-overlay__bg {
+  animation: startBgShrink 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.transition-overlay--start .transition-glow {
+  animation: startGlowExpand 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.transition-overlay--start .transition-overlay__text {
+  animation: startTextFade 1.2s ease-in-out forwards;
+}
+
+/* 开始动画卡牌飞散 */
+.transition-overlay--start .transition-card-fly:nth-child(1) {
+  animation: cardFlyOut1 1s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+}
+
+.transition-overlay--start .transition-card-fly:nth-child(2) {
+  animation: cardFlyOut2 1s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+}
+
+.transition-overlay--start .transition-card-fly:nth-child(3) {
+  animation: cardFlyOut3 1s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+}
+
+.transition-overlay--start .transition-card-fly:nth-child(4) {
+  animation: cardFlyOut4 1s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+}
+
+.transition-overlay--start .transition-card-fly:nth-child(5) {
+  animation: cardFlyOut5 1s cubic-bezier(0.4, 0, 0.2, 1) 0.25s forwards;
+}
+
+.transition-overlay--start .transition-card-fly:nth-child(6) {
+  animation: cardFlyOut6 1s cubic-bezier(0.4, 0, 0.2, 1) 0.15s forwards;
+}
+
+/* ============================================
+   胜利过渡动画
+   金色光芒从中心爆发，文字放大浮现 + Confetti
+   ============================================ */
+
+@keyframes winGlowBurst {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
+
+@keyframes winRingExpand {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+    border-width: 4px;
+  }
+  50% {
+    transform: scale(2);
+    opacity: 1;
+    border-width: 2px;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+    border-width: 0;
+  }
+}
+
+@keyframes winParticleBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.3);
+  }
+}
+
+@keyframes winTextZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes winTextFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes winBgFade {
+  0% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 径向渐变扩散背景 */
+@keyframes radialExpand {
+  0% {
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.3) 0%, transparent 0%);
+  }
+  100% {
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+  }
+}
+
+/* 胜利动画激活状态 */
+.transition-overlay--win .transition-overlay__bg {
+  animation: winBgFade 1.5s ease-out forwards;
+}
+
+.transition-overlay--win .transition-glow {
+  animation: winGlowBurst 1.5s ease-out forwards;
+}
+
+.transition-overlay--win .transition-glow-ring {
+  animation: winRingExpand 1.5s ease-out 0.1s forwards;
+}
+
+.transition-overlay--win .transition-overlay__text {
+  animation: winTextZoom 0.6s ease-out forwards, winTextFadeOut 0.5s ease-in 1s forwards;
+}
+
+/* 胜利时背景径向渐变扩散 */
+.transition-overlay--win .transition-overlay__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  animation: radialExpand 1.5s ease-out forwards;
+}
+
+/* 粒子动画通过 JS 动态添加类名触发 */
+.transition-particle--animate {
+  animation: winParticleBurst 1s ease-out forwards;
+}
+
+/* Confetti 纸屑动画触发 */
+.confetti-piece--animate {
+  animation: confettiFall 2.5s ease-out forwards;
+}
+
+/* ============================================
+   响应式适配
+   ============================================ */
+
+@media (max-width: 768px) {
+  .transition-title {
+    font-size: 2rem;
+    letter-spacing: 0.2em;
+  }
+
+  .transition-subtitle {
+    font-size: 1rem;
+  }
+
+  .transition-glow {
+    width: 120px;
+    height: 120px;
+  }
+
+  .transition-glow-ring {
+    width: 180px;
+    height: 180px;
+  }
+
+  .transition-card-fly {
+    width: 44px;
+    height: 62px;
+    margin-top: -31px;
+    margin-left: -22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transition-title {
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+  }
+
+  .transition-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .transition-card-fly {
+    width: 36px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -18px;
+  }
+}

@@ -1,0 +1,254 @@
+/* ============================================
+   加载画面样式
+   东方风格：国风/和风主题
+   ============================================ */
+
+/* 加载画面容器 */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  overflow: hidden;
+}
+
+/* 背景装饰 - 飘落花瓣粒子 */
+.loading-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 樱花/枫叶粒子 */
+.loading-petal {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: petalFall linear infinite;
+}
+
+/* 樱花形状 */
+.loading-petal--sakura {
+  background: radial-gradient(circle at 30% 30%, #FFB7C5 0%, #F090A0 50%, transparent 70%);
+  border-radius: 50% 0 50% 50%;
+}
+
+/* 枫叶形状 */
+.loading-petal--maple {
+  background: radial-gradient(circle at 30% 30%, #E07050 0%, #C05030 50%, transparent 70%);
+  clip-path: polygon(50% 0%, 80% 30%, 100% 50%, 80% 70%, 50% 100%, 20% 70%, 0% 50%, 20% 30%);
+}
+
+/* 粒子飘落动画 */
+@keyframes petalFall {
+  0% {
+    transform: translateY(-20px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(100vh) translateX(60px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* 加载完成后的隐藏状态 */
+.loading-screen--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* 加载内容区域 */
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 加载标题 - 渐变文字效果 */
+.loading-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  /* 打字机效果光标 */
+  border-right: 3px solid var(--color-accent-gold);
+  animation: typingCursor 0.8s step-end infinite;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* 打字机光标闪烁 */
+@keyframes typingCursor {
+  0%, 100% { border-color: var(--color-accent-gold); }
+  50% { border-color: transparent; }
+}
+
+/* 加载副标题 */
+.loading-subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.1em;
+  margin: 0;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 旋转加载动画 - 莲花/阴阳图案 */
+.loading-spinner {
+  width: 56px;
+  height: 56px;
+  margin: 12px 0;
+  position: relative;
+}
+
+/* 外层莲花花瓣 */
+.loading-spinner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-primary);
+  border-right-color: var(--color-accent-gold);
+  animation: lotusSpin 1.2s linear infinite;
+}
+
+/* 内层装饰 */
+.loading-spinner::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-bottom-color: var(--color-secondary);
+  border-left-color: var(--color-primary);
+  animation: lotusSpin 0.8s linear infinite reverse;
+}
+
+/* 莲花旋转动画 */
+@keyframes lotusSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 加载文字 */
+.loading-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+/* 进度百分比显示 */
+.loading-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.loading-progress-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-accent-gold);
+  letter-spacing: 0.1em;
+}
+
+/* 进度条 */
+.loading-progress-bar {
+  width: 180px;
+  height: 4px;
+  background-color: var(--color-bg-elevated);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+}
+
+.loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent-gold) 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.3);
+}
+
+/* 版本号提示 */
+.loading-version {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .loading-title {
+    font-size: 2rem;
+  }
+
+  .loading-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .loading-spinner {
+    width: 48px;
+    height: 48px;
+  }
+
+  .loading-spinner::after {
+    inset: 6px;
+  }
+
+  .loading-progress-bar {
+    width: 150px;
+  }
+
+  .loading-version {
+    bottom: 16px;
+    font-size: 0.65rem;
+  }
+}

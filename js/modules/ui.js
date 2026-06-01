@@ -3,8 +3,8 @@
  * @module ui
  */
 
-import { formatTime, calculateScore } from './utils.js?v=8';
-import { getDifficultyConfig } from './gameState.js?v=8';
+import { formatTime, calculateScore } from './utils.js?v=10';
+import { getDifficultyConfig } from './gameState.js?v=10';
 
 /**
  * 更新分数板显示
@@ -158,4 +158,93 @@ export function updateLoseOverlay(state, dom) {
   dom.loseMatches.textContent = state.matchedPairs;
   dom.loseTime.textContent = formatTime(state.elapsedSeconds);
   dom.loseErrors.textContent = state.errors;
+}
+
+/**
+ * 创建粒子元素
+ * @param {HTMLElement} container
+ * @param {number} count
+ */
+function createParticles(container, count) {
+  container.querySelectorAll('.transition-particle').forEach((p) => p.remove());
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'transition-particle';
+    const angle = (Math.PI * 2 * i) / count;
+    const distance = 100 + Math.random() * 200;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+    particle.style.setProperty('--tx', `${tx}px`);
+    particle.style.setProperty('--ty', `${ty}px`);
+    particle.style.left = '50%';
+    particle.style.top = '50%';
+    particle.style.marginLeft = '-3px';
+    particle.style.marginTop = '-3px';
+    container.appendChild(particle);
+  }
+}
+
+/**
+ * 显示开始过渡动画
+ * @param {Object} dom
+ * @param {Function} callback
+ */
+export function showStartTransition(dom, callback) {
+  if (!dom.transitionOverlay) {
+    if (callback) callback();
+    return;
+  }
+
+  dom.transitionTitle.textContent = '游戏开始';
+  dom.transitionSubtitle.textContent = '愿君好运';
+
+  const overlay = dom.transitionOverlay;
+  overlay.className = 'transition-overlay transition-overlay--active transition-overlay--start';
+
+  setTimeout(() => {
+    overlay.classList.remove('transition-overlay--active', 'transition-overlay--start');
+    if (callback) callback();
+  }, 1200);
+}
+
+/**
+ * 显示胜利过渡动画
+ * @param {Object} dom
+ * @param {Function} callback
+ */
+export function showWinTransition(dom, callback) {
+  if (!dom.transitionOverlay) {
+    if (callback) callback();
+    return;
+  }
+
+  dom.transitionTitle.textContent = '胜利';
+  dom.transitionSubtitle.textContent = '恭喜通关';
+
+  const overlay = dom.transitionOverlay;
+  const glowContainer = overlay.querySelector('.transition-overlay__glow');
+
+  // 创建粒子效果
+  if (glowContainer) {
+    createParticles(glowContainer, 24);
+  }
+
+  overlay.className = 'transition-overlay transition-overlay--active transition-overlay--win';
+
+  // 触发动画后给粒子添加动画类
+  setTimeout(() => {
+    overlay.querySelectorAll('.transition-particle').forEach((p, i) => {
+      setTimeout(() => {
+        p.classList.add('transition-particle--animate');
+      }, i * 30);
+    });
+  }, 50);
+
+  setTimeout(() => {
+    overlay.classList.remove('transition-overlay--active', 'transition-overlay--win');
+    if (glowContainer) {
+      glowContainer.querySelectorAll('.transition-particle').forEach((p) => p.remove());
+    }
+    if (callback) callback();
+  }, 1500);
 }

@@ -3,7 +3,7 @@
  * @module storage
  */
 
-import { STORAGE_KEYS } from './constants.js?v=8';
+import { STORAGE_KEYS } from './constants.js?v=10';
 
 /**
  * 从 localStorage 安全读取数据

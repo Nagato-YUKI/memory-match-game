@@ -1,0 +1,623 @@
+/* ============================================
+   个人简历页面样式 - 东方风格
+   ============================================ */
+
+/* 引入游戏主题变量 */
+@import url('variables.css');
+
+/* 基础重置 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.7;
+  transition: background-color var(--transition-base);
+}
+
+/* 主题背景图 */
+body {
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--bg-overlay);
+  pointer-events: none;
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-secondary-hover);
+  text-decoration: underline;
+}
+
+/* 顶部导航栏 */
+.resume-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--card-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.resume-nav__inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resume-nav__title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+}
+
+.resume-nav__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.resume-nav__back:hover {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+/* 顶部装饰背景 */
+.resume-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 320px;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-light) 0%,
+    transparent 100%
+  );
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 主容器 */
+.resume-container {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+/* 卡片通用样式 */
+.resume-card {
+  background: var(--color-bg-elevated);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+  margin-bottom: 24px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: cardFadeInUp 0.6s ease forwards;
+}
+
+/* 卡片依次淡入上浮动画 */
+.resume-card:nth-child(1) { animation-delay: 0.1s; }
+.resume-card:nth-child(2) { animation-delay: 0.2s; }
+.resume-card:nth-child(3) { animation-delay: 0.3s; }
+.resume-card:nth-child(4) { animation-delay: 0.4s; }
+.resume-card:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes cardFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.resume-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* 国风金色边角装饰 */
+[data-card-theme="guofeng"] .resume-card {
+  position: relative;
+}
+
+[data-card-theme="guofeng"] .resume-card::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-accent-gold);
+  border-right: none;
+  border-bottom: none;
+  opacity: 0.4;
+}
+
+[data-card-theme="guofeng"] .resume-card::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-accent-gold);
+  border-left: none;
+  border-top: none;
+  opacity: 0.4;
+}
+
+/* 和风樱花装饰 */
+[data-card-theme="japanese"] .resume-card {
+  position: relative;
+}
+
+[data-card-theme="japanese"] .resume-card::before {
+  content: '\274B';
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1rem;
+  color: var(--color-primary);
+  opacity: 0.3;
+}
+
+/* 基本信息卡片 */
+.resume-header {
+  text-align: center;
+  padding: 36px 28px;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-light) 0%,
+    var(--color-bg-elevated) 60%
+  );
+}
+
+/* 头像样式：圆形、金色边框、阴影、悬停放大 */
+.resume-header__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-accent-gold);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  margin-bottom: 16px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+
+.resume-header__avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.resume-header__name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+}
+
+.resume-header__contact {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 20px;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+.resume-header__contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 联系方式SVG图标 */
+.contact-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-secondary);
+  flex-shrink: 0;
+}
+
+/* 下载简历按钮 */
+.resume-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: var(--card-radius);
+  border: 1px solid var(--color-secondary);
+  background: transparent;
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: inherit;
+}
+
+.resume-download-btn:hover {
+  background: var(--color-secondary);
+  color: var(--color-text-inverse);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.download-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* 区块标题 */
+.resume-section__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 0.05em;
+}
+
+.resume-section__title .icon {
+  font-size: 1.2rem;
+}
+
+/* 经历条目 - 添加时间线装饰 */
+.resume-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  border-bottom: 1px solid var(--card-border);
+  border-left: 2px solid var(--color-primary-light);
+}
+
+.resume-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* 时间线节点 */
+.resume-item::before {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: 2px solid var(--color-bg-elevated);
+}
+
+.resume-item__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin-bottom: 6px;
+}
+
+.resume-item__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.resume-item__time {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.resume-item__subtitle {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.resume-item__desc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+}
+
+.resume-item__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* 项目标签：圆角 + 主题色边框 */
+.resume-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-secondary);
+  opacity: 0.9;
+  transition: all var(--transition-fast);
+}
+
+.resume-tag:hover {
+  background: var(--color-secondary);
+  color: var(--color-text-inverse);
+  transform: translateY(-1px);
+}
+
+/* 技能网格 */
+.resume-skills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.resume-skill__category {
+  background: var(--color-bg);
+  border-radius: calc(var(--card-radius) - 2px);
+  border: 1px solid var(--card-border);
+  padding: 16px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.resume-skill__category:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+.resume-skill__category-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resume-skill__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 技能标签：渐变背景 + 悬停发光 */
+.resume-skill__tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-light) 0%,
+    var(--color-bg-elevated) 100%
+  );
+  color: var(--color-text-secondary);
+  border: 1px solid var(--card-border);
+  transition: all var(--transition-fast);
+  cursor: default;
+}
+
+.resume-skill__tag:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(184, 58, 47, 0.2);
+  transform: translateY(-1px);
+}
+
+[data-card-theme="japanese"] .resume-skill__tag:hover {
+  box-shadow: 0 0 8px rgba(201, 123, 138, 0.25);
+}
+
+/* 页脚 */
+.resume-footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.resume-footer__divider {
+  width: 60px;
+  height: 2px;
+  background: var(--color-accent-gold);
+  margin: 0 auto 16px;
+  opacity: 0.5;
+}
+
+/* 返回顶部按钮 */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-fast);
+  z-index: 40;
+}
+
+.back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-2px);
+}
+
+/* 打印样式优化 */
+@media print {
+  .resume-nav,
+  .back-to-top,
+  .resume-download-btn,
+  .resume-hero-bg {
+    display: none !important;
+  }
+
+  .resume-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .resume-header__avatar {
+    border: 2px solid #999;
+    box-shadow: none;
+  }
+}
+
+/* 响应式适配 */
+@media (max-width: 640px) {
+  .resume-hero-bg {
+    height: 240px;
+  }
+
+  .resume-container {
+    padding: 20px 16px 40px;
+  }
+
+  .resume-card {
+    padding: 20px;
+  }
+
+  .resume-header {
+    padding: 28px 20px;
+  }
+
+  .resume-header__avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .resume-header__name {
+    font-size: 1.5rem;
+  }
+
+  .resume-header__contact {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .resume-item__header {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .resume-item {
+    padding-left: 16px;
+  }
+
+  .resume-skills {
+    grid-template-columns: 1fr;
+  }
+
+  .resume-nav__inner {
+    padding: 12px 16px;
+  }
+
+  .resume-nav__title {
+    font-size: 1rem;
+  }
+
+  .resume-download-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 400px) {
+  .resume-header__avatar {
+    width: 88px;
+    height: 88px;
+  }
+
+  .resume-section__title {
+    font-size: 1rem;
+  }
+}

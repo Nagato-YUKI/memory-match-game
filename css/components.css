@@ -164,6 +164,52 @@
   flex: 1;
 }
 
+/* 竖排按钮布局（用于胜利遮罩：分享 + 再玩一次 + 返回菜单） */
+.result-buttons--vertical {
+  flex-direction: column;
+}
+
+.result-buttons--vertical .btn {
+  width: 100%;
+  flex: none;
+}
+
+/* 分享按钮 */
+.btn--share {
+  background-color: var(--color-accent-gold);
+  color: var(--color-text-inverse);
+}
+
+.btn--share:hover {
+  background-color: #B89420;
+  box-shadow: 0 4px 12px rgba(201, 162, 39, 0.35);
+}
+
+/* 分享结果 Toast 提示 */
+.share-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  z-index: 200;
+  padding: 12px 24px;
+  border-radius: var(--card-radius);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 300ms ease, transform 300ms ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.share-toast--show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 /* 辅助类 */
 .visually-hidden {
   position: absolute;

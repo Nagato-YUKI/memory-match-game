@@ -3,26 +3,30 @@
  * @module eventHandlers
  */
 
-import { GameState } from './constants.js?v=8';
-import { canFlipCard, isAllMatched } from './gameState.js?v=8';
+import { GameState } from './constants.js?v=10';
+import { canFlipCard, isAllMatched } from './gameState.js?v=10';
 import {
   flipCard,
   unflipCard,
   markMatched,
   markMismatch,
   clearMismatch,
-} from './cardRenderer.js?v=8';
+} from './cardRenderer.js?v=10';
 import {
   playSound,
   playBGM,
   pauseBGM,
   syncSoundEnabled,
   syncBgmEnabled,
-} from './audio.js?v=8';
-import { savePreferences } from './storage.js?v=8';
-import { renderSkinSelector } from './skinUI.js?v=8';
-import { getSelectedSkinId, findSkinById } from './cardSkins.js?v=8';
-import { updateScoreBoard } from './ui.js?v=8';
+} from './audio.js?v=10';
+import { savePreferences } from './storage.js?v=10';
+import { renderSkinSelector } from './skinUI.js?v=10';
+import { getSelectedSkinId, findSkinById } from './cardSkins.js?v=10';
+import { updateScoreBoard } from './ui.js?v=10';
+import { getLeaderboard, clearLeaderboard } from './leaderboard.js?v=10';
+import { getAchievements } from './achievements.js?v=10';
+import { formatTime } from './utils.js?v=10';
+import { shareGame } from './share.js?v=10';
 
 /**
  * 创建事件处理器
@@ -245,6 +249,19 @@ export function createEventHandlers(state, dom, transitionTo) {
       transitionTo(GameState.IDLE);
     });
 
+    // 分享成绩
+    if (dom.shareBtn) {
+      dom.shareBtn.addEventListener('click', () => {
+        const score = parseInt(dom.winScore.textContent, 10) || 0;
+        const timeText = dom.winTime.textContent || '00:00';
+        const errors = parseInt(dom.winErrors.textContent, 10) || 0;
+        const timeParts = timeText.split(':');
+        const time = parseInt(timeParts[0], 10) * 60 + parseInt(timeParts[1], 10);
+        shareGame(score, time, errors, state.difficulty);
+        playSound('click');
+      });
+    }
+
     // 失败后再玩一次
     dom.loseReplayBtn.addEventListener('click', () => {
       playSound('click');
@@ -256,6 +273,144 @@ export function createEventHandlers(state, dom, transitionTo) {
       playSound('click');
       transitionTo(GameState.IDLE);
     });
+
+    // 排行榜按钮
+    if (dom.leaderboardBtn) {
+      dom.leaderboardBtn.addEventListener('click', () => {
+        renderLeaderboard('score');
+        dom.leaderboardOverlay.classList.remove('overlay--hidden');
+        playSound('click');
+      });
+    }
+
+    // 排行榜排序按钮
+    if (dom.leaderboardSortScore) {
+      dom.leaderboardSortScore.addEventListener('click', () => {
+        renderLeaderboard('score');
+        dom.leaderboardSortScore.classList.add('btn--active');
+        dom.leaderboardSortTime.classList.remove('btn--active');
+        playSound('click');
+      });
+    }
+
+    if (dom.leaderboardSortTime) {
+      dom.leaderboardSortTime.addEventListener('click', () => {
+        renderLeaderboard('time');
+        dom.leaderboardSortTime.classList.add('btn--active');
+        dom.leaderboardSortScore.classList.remove('btn--active');
+        playSound('click');
+      });
+    }
+
+    // 排行榜清空按钮
+    if (dom.leaderboardClearBtn) {
+      dom.leaderboardClearBtn.addEventListener('click', () => {
+        if (confirm('确定要清空所有排行榜记录吗？')) {
+          clearLeaderboard();
+          renderLeaderboard('score');
+          playSound('click');
+        }
+      });
+    }
+
+    // 排行榜关闭按钮
+    if (dom.leaderboardCloseBtn) {
+      dom.leaderboardCloseBtn.addEventListener('click', () => {
+        dom.leaderboardOverlay.classList.add('overlay--hidden');
+        playSound('click');
+      });
+    }
+
+    // 成就按钮
+    if (dom.achievementsBtn) {
+      dom.achievementsBtn.addEventListener('click', () => {
+        renderAchievements();
+        dom.achievementsOverlay.classList.remove('overlay--hidden');
+        playSound('click');
+      });
+    }
+
+    // 成就关闭按钮
+    if (dom.achievementsCloseBtn) {
+      dom.achievementsCloseBtn.addEventListener('click', () => {
+        dom.achievementsOverlay.classList.add('overlay--hidden');
+        playSound('click');
+      });
+    }
+
+    // 点击遮罩背景关闭
+    if (dom.leaderboardOverlay) {
+      dom.leaderboardOverlay.addEventListener('click', (e) => {
+        if (e.target === dom.leaderboardOverlay) {
+          dom.leaderboardOverlay.classList.add('overlay--hidden');
+        }
+      });
+    }
+
+    if (dom.achievementsOverlay) {
+      dom.achievementsOverlay.addEventListener('click', (e) => {
+        if (e.target === dom.achievementsOverlay) {
+          dom.achievementsOverlay.classList.add('overlay--hidden');
+        }
+      });
+    }
+  }
+
+  /**
+   * 渲染排行榜列表
+   * @param {string} sortBy 排序方式
+   */
+  function renderLeaderboard(sortBy = 'score') {
+    if (!dom.leaderboardBody) return;
+    const data = getLeaderboard(sortBy);
+    if (data.length === 0) {
+      dom.leaderboardBody.innerHTML = '<tr><td colspan="5" class="leaderboard-empty">暂无记录</td></tr>';
+      return;
+    }
+    const difficultyMap = { easy: '简单', medium: '中等', hard: '困难' };
+    dom.leaderboardBody.innerHTML = data.map((entry, index) => {
+      const rankClass = index < 3 ? `rank-${index + 1}` : '';
+      return `<tr>
+        <td><span class="leaderboard-rank ${rankClass}">${index + 1}</span></td>
+        <td>${escapeHtml(entry.nickname)}</td>
+        <td>${entry.score}</td>
+        <td>${formatTime(entry.time)}</td>
+        <td>${difficultyMap[entry.difficulty] || entry.difficulty}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  /**
+   * 渲染成就面板
+   */
+  function renderAchievements() {
+    if (!dom.achievementsGrid) return;
+    const achievements = getAchievements();
+    dom.achievementsGrid.innerHTML = achievements.map((ach) => {
+      const unlockedClass = ach.unlocked ? 'achievement--unlocked' : 'achievement--locked';
+      const dateText = ach.unlocked && ach.date
+        ? `<span class="achievement-date">${new Date(ach.date).toLocaleDateString('zh-CN')}</span>`
+        : '';
+      return `<div class="achievement-card ${unlockedClass}">
+        <div class="achievement-icon">${ach.icon}</div>
+        <div class="achievement-info">
+          <div class="achievement-name">${escapeHtml(ach.name)}</div>
+          <div class="achievement-desc">${escapeHtml(ach.description)}</div>
+          ${dateText}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  /**
+   * HTML 转义防止 XSS
+   * @param {string} text
+   * @returns {string}
+   */
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   return { onCardClick, bindEvents };

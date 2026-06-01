@@ -1,0 +1,284 @@
+/* ============================================
+   引导弹窗样式
+   东方风格：国风/和风主题
+   ============================================ */
+
+/* 引导弹窗遮罩 - 模糊效果增强 */
+#tutorial-overlay.overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  background: rgba(30, 20, 15, 0.6);
+}
+
+/* 引导弹窗内容区域 - 进入动画 */
+.tutorial-content {
+  max-width: 400px;
+  width: 92%;
+  padding: 32px 28px;
+  text-align: left;
+  animation: tutorialIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 弹窗进入动画：缩放+淡入 */
+@keyframes tutorialIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translateY(20px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* 引导弹窗标题居中 */
+.tutorial-content .overlay-title {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+/* 标题装饰 */
+.tutorial-content .overlay-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-accent-gold), transparent);
+  border-radius: 2px;
+  margin: 10px auto 0;
+}
+
+/* 步骤指示器（圆点步骤条） */
+.tutorial-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tutorial-step-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--card-border);
+  border: 2px solid var(--color-text-muted);
+  transition: all 0.3s ease;
+}
+
+.tutorial-step-dot--active {
+  background-color: var(--color-accent-gold);
+  border-color: var(--color-accent-gold);
+  box-shadow: 0 0 8px rgba(201, 162, 39, 0.5);
+  transform: scale(1.2);
+}
+
+.tutorial-step-dot--completed {
+  background-color: var(--color-accent-success);
+  border-color: var(--color-accent-success);
+}
+
+/* 步骤连接线 */
+.tutorial-step-line {
+  width: 24px;
+  height: 2px;
+  background-color: var(--card-border);
+  border-radius: 1px;
+  transition: background-color 0.3s ease;
+}
+
+.tutorial-step-line--active {
+  background: linear-gradient(90deg, var(--color-accent-gold), var(--card-border));
+}
+
+/* 引导分节 */
+.tutorial-section {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--card-border);
+  position: relative;
+  padding-left: 44px;
+}
+
+.tutorial-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+/* 引导小节图标装饰 */
+.tutorial-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.15) 0%, rgba(201, 162, 39, 0.05) 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  font-size: 1.1rem;
+}
+
+/* 各小节对应图标 */
+.tutorial-section:nth-child(1)::before {
+  content: '📜';
+}
+
+.tutorial-section:nth-child(2)::before {
+  content: '🎮';
+}
+
+.tutorial-section:nth-child(3)::before {
+  content: '⚡';
+}
+
+/* 引导小标题 */
+.tutorial-subtitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 0 0 8px 0;
+  letter-spacing: 0.05em;
+}
+
+/* 引导正文 */
+.tutorial-text {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* 复选框标签 */
+.tutorial-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 隐藏原生复选框 */
+.tutorial-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* 自定义复选框 */
+.tutorial-checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-text-muted);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* 复选框选中状态 */
+.tutorial-checkbox:checked + .tutorial-checkmark {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* 复选框勾选图标 */
+.tutorial-checkbox:checked + .tutorial-checkmark::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--color-text-inverse);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+/* 复选框文字 */
+.tutorial-checkbox-text {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+/* 引导弹窗按钮 - 渐变背景 */
+.tutorial-content .btn--large {
+  margin-top: 4px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(184, 58, 47, 0.25);
+  transition: all 0.25s ease;
+}
+
+.tutorial-content .btn--large:hover {
+  box-shadow: 0 6px 16px rgba(184, 58, 47, 0.35);
+  transform: translateY(-1px);
+}
+
+/* 和风主题按钮颜色调整 */
+[data-card-theme="japanese"] .tutorial-content .btn--large {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #B56575 100%);
+  box-shadow: 0 4px 12px rgba(201, 123, 138, 0.25);
+}
+
+[data-card-theme="japanese"] .tutorial-content .btn--large:hover {
+  box-shadow: 0 6px 16px rgba(201, 123, 138, 0.35);
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .tutorial-content {
+    padding: 24px 20px;
+    width: 94%;
+  }
+
+  .tutorial-content .overlay-title {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .tutorial-section {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    padding-left: 40px;
+  }
+
+  .tutorial-section::before {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+    border-radius: 6px;
+  }
+
+  .tutorial-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .tutorial-text {
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  .tutorial-steps {
+    margin-bottom: 20px;
+  }
+
+  .tutorial-step-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .tutorial-step-line {
+    width: 16px;
+  }
+}
