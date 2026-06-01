@@ -76,6 +76,7 @@ export function updateThemeUI(state, dom) {
  * @param {Object} dom
  */
 export function updateCardThemeUI(state, dom) {
+  if (!dom.cardThemeBtns) return;
   dom.cardThemeBtns.forEach((btn) => {
     const isActive = btn.dataset.cardTheme === state.cardTheme;
     btn.classList.toggle('card-theme-btn--active', isActive);
@@ -96,12 +97,12 @@ export function updateSoundUI(state, dom) {
 
 /**
  * 更新 BGM 开关 UI
- * @param {boolean} enabled
+ * @param {Object} state
  * @param {Object} dom
  */
-export function updateBGMUI(enabled, dom) {
+export function updateBGMUI(state, dom) {
   if (dom.bgmToggle) {
-    dom.bgmToggle.checked = enabled;
+    dom.bgmToggle.checked = state.bgmEnabled;
   }
 }
 

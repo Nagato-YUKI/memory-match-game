@@ -28,6 +28,7 @@ export function createGameState() {
     flippedCards: [],
     matchedPairs: 0,
     errors: 0,
+    moves: 0,
     elapsedSeconds: 0,
     countdownSeconds: 0,
 
@@ -47,6 +48,7 @@ export function resetGameData(state) {
   state.flippedCards = [];
   state.matchedPairs = 0;
   state.errors = 0;
+  state.moves = 0;
   state.elapsedSeconds = 0;
   state.countdownSeconds = 0;
   state.isAnimating = false;
@@ -92,7 +94,7 @@ export function canFlipCard(state, cardId) {
 
   const card = state.cards[cardId];
   if (!card || card.matched) return false;
-  if (state.flippedCards.includes(cardId)) return false;
+  if (state.flippedCards.some((c) => c.index === cardId)) return false;
   if (state.flippedCards.length >= 2) return false;
 
   return true;

@@ -97,7 +97,7 @@ export function isSkinUnlocked(skinId) {
   if (skin.unlockScore === 0) return true;
 
   const unlocked = safeGetItem(SKIN_STORAGE_KEY, []);
-  if (unlocked.includes(skinId)) return false;
+  if (unlocked.includes(skinId)) return true;
 
   return getTotalScore() >= skin.unlockScore;
 }

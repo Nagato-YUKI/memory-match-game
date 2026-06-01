@@ -16,8 +16,9 @@ import {
 import {
   playBGM,
   pauseBGM,
+  playSound,
 } from './audio.js?v=8';
-import { savePreferences } from './storage.js?v=8';
+import { savePreferences, saveHighScore, saveBestTime } from './storage.js?v=8';
 import { startTimer, stopAll } from './timer.js?v=8';
 import {
   updateScoreBoard,
@@ -27,6 +28,8 @@ import {
   updateWinOverlay,
   updateLoseOverlay,
 } from './ui.js?v=8';
+import { calculateScore } from './utils.js?v=8';
+import { addTotalScore, checkAndUnlockSkins } from './cardSkins.js?v=8';
 
 /**
  * 创建状态机
@@ -122,6 +125,28 @@ export function createStateMachine(state, dom, onCardClick) {
     stopAll();
     pauseBGM();
     lockAllCards(dom.gameBoard, true);
+
+    // 计算最终得分并保存
+    const finalScore = calculateScore({
+      matchedPairs: state.matchedPairs,
+      elapsedSeconds: state.elapsedSeconds,
+      errors: state.errors,
+      config: getDifficultyConfig(state),
+    });
+
+    state.highScore = saveHighScore(finalScore, state.highScore);
+    state.bestTime = saveBestTime(state.elapsedSeconds, state.bestTime);
+    savePreferences(state);
+
+    addTotalScore(finalScore);
+    const newUnlocks = checkAndUnlockSkins();
+    if (newUnlocks.length > 0 && dom.startScreen) {
+      import('./skinUI.js?v=8').then((skinUI) => {
+        skinUI.showUnlockNotification(newUnlocks, document.body);
+      });
+    }
+
+    setTimeout(() => playSound('victory'), 300);
 
     setTimeout(() => {
       updateWinOverlay(state, dom);

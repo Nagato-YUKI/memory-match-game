@@ -109,6 +109,22 @@ export function isSoundEnabled() {
 }
 
 /**
+ * 从外部状态同步音效开关
+ * @param {boolean} enabled
+ */
+export function syncSoundEnabled(enabled) {
+  soundEnabled = enabled;
+}
+
+/**
+ * 从外部状态同步 BGM 开关
+ * @param {boolean} enabled
+ */
+export function syncBgmEnabled(enabled) {
+  bgmEnabled = enabled;
+}
+
+/**
  * 播放音效
  * @param {string} type 音效类型
  */

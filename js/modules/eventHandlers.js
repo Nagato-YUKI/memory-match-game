@@ -16,8 +16,13 @@ import {
   playSound,
   playBGM,
   pauseBGM,
+  syncSoundEnabled,
+  syncBgmEnabled,
 } from './audio.js?v=8';
 import { savePreferences } from './storage.js?v=8';
+import { renderSkinSelector } from './skinUI.js?v=8';
+import { getSelectedSkinId, findSkinById } from './cardSkins.js?v=8';
+import { updateScoreBoard } from './ui.js?v=8';
 
 /**
  * 创建事件处理器
@@ -41,6 +46,7 @@ export function createEventHandlers(state, dom, transitionTo) {
 
     if (state.flippedCards.length === 2) {
       state.moves += 1;
+      state.isAnimating = true;
       checkMatch();
     }
   }
@@ -64,7 +70,7 @@ export function createEventHandlers(state, dom, transitionTo) {
    * @param {Object} card2
    */
   function handleMatch(card1, card2) {
-    state.matches += 1;
+    state.matchedPairs += 1;
     card1.matched = true;
     card2.matched = true;
 
@@ -72,6 +78,8 @@ export function createEventHandlers(state, dom, transitionTo) {
       markMatched(dom.gameBoard, card1.index);
       markMatched(dom.gameBoard, card2.index);
       playSound('match');
+      updateScoreBoard(state, dom);
+      state.isAnimating = false;
 
       if (isAllMatched(state)) {
         transitionTo(GameState.WON);
@@ -87,6 +95,9 @@ export function createEventHandlers(state, dom, transitionTo) {
    * @param {Object} card2
    */
   function handleMismatch(card1, card2) {
+    state.errors += 1;
+    updateScoreBoard(state, dom);
+
     setTimeout(() => {
       markMismatch(dom.gameBoard, card1.index);
       markMismatch(dom.gameBoard, card2.index);
@@ -99,6 +110,7 @@ export function createEventHandlers(state, dom, transitionTo) {
       clearMismatch(dom.gameBoard, card1.index);
       clearMismatch(dom.gameBoard, card2.index);
       state.flippedCards = [];
+      state.isAnimating = false;
     }, 1000);
   }
 
@@ -107,11 +119,15 @@ export function createEventHandlers(state, dom, transitionTo) {
    */
   function bindEvents() {
     // 难度选择
-    dom.difficultyOptions.forEach((opt) => {
-      opt.addEventListener('click', () => {
-        state.difficulty = opt.dataset.value;
-        dom.difficultyOptions.forEach((o) => o.classList.remove('selected'));
-        opt.classList.add('selected');
+    dom.difficultyBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.difficulty = btn.dataset.difficulty;
+        dom.difficultyBtns.forEach((b) => b.classList.remove('difficulty-btn--active'));
+        btn.classList.add('difficulty-btn--active');
+        btn.setAttribute('aria-checked', 'true');
+        dom.difficultyBtns.forEach((b) => {
+          if (b !== btn) b.setAttribute('aria-checked', 'false');
+        });
         playSound('click');
       });
     });
@@ -122,17 +138,6 @@ export function createEventHandlers(state, dom, transitionTo) {
       playSound('click');
     });
 
-    // 卡牌主题
-    dom.cardThemeOptions.forEach((opt) => {
-      opt.addEventListener('click', () => {
-        state.cardTheme = opt.dataset.value;
-        dom.cardThemeOptions.forEach((o) => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        document.body.setAttribute('data-card-theme', state.cardTheme);
-        playSound('click');
-      });
-    });
-
     // 主题切换
     dom.themeToggle.addEventListener('click', () => {
       state.theme = state.theme === 'light' ? 'dark' : 'light';
@@ -141,22 +146,51 @@ export function createEventHandlers(state, dom, transitionTo) {
     });
 
     // 音效开关
-    dom.soundToggle.addEventListener('click', () => {
-      state.soundEnabled = !state.soundEnabled;
-      dom.soundToggle.classList.toggle('active', state.soundEnabled);
-      playSound('click');
-    });
+    if (dom.soundToggle) {
+      dom.soundToggle.addEventListener('change', () => {
+        state.soundEnabled = dom.soundToggle.checked;
+        syncSoundEnabled(state.soundEnabled);
+        savePreferences(state);
+        playSound('click');
+      });
+    }
 
     // BGM 开关
-    dom.bgmToggle.addEventListener('click', () => {
-      state.bgmEnabled = !state.bgmEnabled;
-      dom.bgmToggle.classList.toggle('active', state.bgmEnabled);
-      if (state.bgmEnabled) {
-        playBGM();
-      } else {
-        pauseBGM();
-      }
-    });
+    if (dom.bgmToggle) {
+      dom.bgmToggle.addEventListener('change', () => {
+        state.bgmEnabled = dom.bgmToggle.checked;
+        syncBgmEnabled(state.bgmEnabled);
+        savePreferences(state);
+        if (state.bgmEnabled) {
+          playBGM();
+        } else {
+          pauseBGM();
+        }
+      });
+    }
+
+    // 卡面选择按钮
+    if (dom.skinToggleBtn) {
+      dom.skinToggleBtn.addEventListener('click', () => {
+        const panel = document.getElementById('skin-panel');
+        if (panel) {
+          const isHidden = panel.style.display === 'none';
+          panel.style.display = isHidden ? 'block' : 'none';
+          if (isHidden) {
+            panel.innerHTML = '';
+            renderSkinSelector(panel, (skinId) => {
+              const skin = findSkinById(skinId);
+              if (skin) {
+                state.cardTheme = skin.seriesId;
+                document.body.setAttribute('data-card-theme', skin.seriesId);
+                savePreferences(state);
+              }
+            }, state.cardTheme);
+          }
+        }
+        playSound('click');
+      });
+    }
 
     // 开始游戏
     dom.startBtn.addEventListener('click', () => {
@@ -179,25 +213,48 @@ export function createEventHandlers(state, dom, transitionTo) {
       }
     });
 
-    // 重新开始
+    // 重新开始（游戏内）
     dom.restartBtn.addEventListener('click', () => {
       transitionTo(GameState.PLAYING);
       playSound('click');
     });
 
+    // 重新开始（暂停遮罩）
+    if (dom.pauseRestartBtn) {
+      dom.pauseRestartBtn.addEventListener('click', () => {
+        transitionTo(GameState.PLAYING);
+        playSound('click');
+      });
+    }
+
     // 返回菜单
-    dom.backToMenuBtn.addEventListener('click', () => {
-      transitionTo(GameState.IDLE);
-    });
-
-    dom.loseBackToMenuBtn.addEventListener('click', () => {
-      transitionTo(GameState.IDLE);
-    });
-
-    // 再玩一次
-    dom.playAgainBtn.addEventListener('click', () => {
-      transitionTo(GameState.PLAYING);
+    dom.menuBtn.addEventListener('click', () => {
       playSound('click');
+      transitionTo(GameState.IDLE);
+    });
+
+    // 胜利后再玩一次
+    dom.winReplayBtn.addEventListener('click', () => {
+      playSound('click');
+      transitionTo(GameState.PLAYING);
+    });
+
+    // 胜利后返回菜单
+    dom.winMenuBtn.addEventListener('click', () => {
+      playSound('click');
+      transitionTo(GameState.IDLE);
+    });
+
+    // 失败后再玩一次
+    dom.loseReplayBtn.addEventListener('click', () => {
+      playSound('click');
+      transitionTo(GameState.PLAYING);
+    });
+
+    // 失败后返回菜单
+    dom.loseMenuBtn.addEventListener('click', () => {
+      playSound('click');
+      transitionTo(GameState.IDLE);
     });
   }
 

@@ -4,7 +4,7 @@
  */
 
 import { createGameState } from './modules/gameState.js?v=8';
-import { initAudioContext } from './modules/audio.js?v=8';
+import { initAudioContext, initBGM, syncSoundEnabled, syncBgmEnabled } from './modules/audio.js?v=8';
 import getDOMElements from './modules/dom.js?v=8';
 import {
   updateScoreBoard,
@@ -54,8 +54,13 @@ function init() {
   updateScoreBoard(state, dom);
   updateHistoryDisplay(state, dom);
 
+  // 同步音频开关状态到 audio 模块
+  syncSoundEnabled(state.soundEnabled);
+  syncBgmEnabled(state.bgmEnabled);
+
   // 初始化音频
   initAudioContext();
+  initBGM('bgm.mp3');
 
   // 绑定事件
   finalHandlers.bindEvents();
